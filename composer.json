@@ -1,0 +1,35 @@
+{
+    "name": "zenigata/testing",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0-alpha",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Ilario Promutico"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Zenigata\\Testing\\": "src/",
+            "Zenigata\\Testing\\Test\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../contracts"
+        }
+    ],
+    "require": {
+        "zenigata/contracts": "*"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "^1.6",
+        "phpunit/phpunit": "^12.2"
+    },
+    "scripts": {
+        "test": "phpunit --configuration phpunit.xml"
+    }
+}
