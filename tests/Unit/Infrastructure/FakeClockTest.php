@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Zenigata\Testing\Test\Unit\Infrastructure;
+
+use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Zenigata\Testing\Infrastructure\FakeClock;
+
+/**
+ * Unit test for {@see FakeClock}.
+ *
+ * Verifies the behavior of the fake PSR-20 clock implementation, including:
+ *
+ * - Returning the current time by default.
+ * - Accepting a fixed time via {@see DateTimeImmutable} or string.
+ * - Returning consistent results for the provided fixed time.
+ */
+#[CoversClass(FakeClock::class)]
+final class FakeClockTest extends TestCase
+{
+    #[Test]
+    public function defaults(): void
+    {
+        $clock = new FakeClock();
+
+        $this->assertInstanceOf(DateTimeImmutable::class, $clock->now());
+        $this->assertSame(new DateTimeImmutable()->getTimestamp(), $clock->now()->getTimestamp());
+    }
+
+    #[Test]
+    public function acceptDateTimeImmutable(): void
+    {
+        $datetime = new DateTimeImmutable('2023-01-01 00:00:00');
+
+        $clock = new FakeClock($datetime);
+
+        $this->assertSame($datetime, $clock->now());
+    }
+
+    #[Test]
+    public function acceptStringDate(): void
+    {
+        $datetime = '2024-05-05 12:00:00';
+
+        $clock = new FakeClock($datetime);
+
+        $this->assertSame($datetime, $clock->now()->format('Y-m-d H:i:s'));
+    }
+}

@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Zenigata\Testing\Test\Unit\Http;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Zenigata\Testing\Http\FakeResponse;
+use Zenigata\Testing\Http\FakeStream;
+
+/**
+ * Unit test for {@see FakeResponse}.
+ *
+ * Verifies the behavior of the fake PSR-7 response implementation, covering:
+ *
+ * - Default status code and reason phrase.
+ * - Immutability when changing status code and reason phrase via {@see FakeResponse::withStatus()}.
+ * - Overriding the reason phrase explicitly.
+ * - Allowing an empty reason phrase.
+ * - Ensuring headers, body, and protocol version are preserved when changing status.
+ */
+#[CoversClass(FakeResponse::class)]
+final class FakeResponseTest extends TestCase
+{
+    #[Test]
+    public function defaults(): void
+    {
+        $response = new FakeResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('OK', $response->getReasonPhrase());
+    }
+
+    #[Test]
+    public function withStatus(): void
+    {
+        $original = new FakeResponse();
+        $modified = $original->withStatus(404, 'Not Found');
+
+        $this->assertNotSame($original, $modified);
+        $this->assertSame(200, $original->getStatusCode());
+        $this->assertSame(404, $modified->getStatusCode());
+    }
+
+    #[Test]
+    public function withStatusOverridesReasonPhrase(): void
+    {
+        $response = new FakeResponse();
+        $response = $response->withStatus(404, 'Not Found');
+
+        $this->assertSame('Not Found', $response->getReasonPhrase());
+    }
+
+    #[Test]
+    public function withStatusAcceptsEmptyReasonPhrase(): void
+    {
+        $response = new FakeResponse(403, 'Forbidden');
+        $response = $response->withStatus(403, '');
+
+        $this->assertSame('', $response->getReasonPhrase());
+    }
+
+    #[Test]
+    public function withStatusPreservesHeadersBodyAndProtocol(): void
+    {
+        $headers = ['X-Custom-Header' => ['1']];
+        $body = new FakeStream('foo');
+
+        $original = new FakeResponse(200, 'OK', $headers, $body, '2');
+        $modified = $original->withStatus(201, 'Created');
+
+        $this->assertSame($headers, $modified->getHeaders());
+        $this->assertSame($body, $modified->getBody());
+        $this->assertSame('2', $modified->getProtocolVersion());
+    }
+}
