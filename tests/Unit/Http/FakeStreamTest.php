@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
+use const SEEK_END;
+use const SEEK_SET;
+
 use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,19 +17,22 @@ use Zenigata\Testing\Http\FakeStream;
 /**
  * Unit test for {@see FakeStream}.
  *
- * Verifies the behavior of the fake PSR-7 stream implementation, covering:
- *
+ * Verifies the behavior of the fake PSR-7 stream implementation.
+ * 
+ * Covered cases:
+ * 
  * - Default state and capabilities (seekable, readable, writable, pointer position, size, EOF, read history).
- * - String casting to return stream contents.
+ * - String cast returns stream contents.
  * - Accurate size calculation.
- * - Reading chunks, updating the pointer, read count, and read history.
- * - Retrieving remaining contents from the current pointer.
- * - EOF detection.
- * - Rewinding the stream pointer and throwing when not seekable.
- * - Writing to the stream when writable.
- * - Capability flags for seekable, readable, and writable states.
- * - Metadata always returning `null`.
- * - Seek operation being a no-op by design.
+ * - Read chunks update the pointer, read count, and read history.
+ * - Remaining contents retrieved from the current pointer.
+ * - EOF correctly detected.
+ * - Rewind resets the stream pointer and throws when not seekable.
+ * - Write appends data when the stream is writable.
+ * - Capability flags reflect seekable, readable, and writable states.
+ * - Metadata retrieval supports full array, specific keys, and null for missing keys.
+ * - Seek operation moves the pointer correctly (SEEK_SET, SEEK_CUR, SEEK_END).
+ * - Seek throws RuntimeException when attempting to move out of bounds.
  */
 #[CoversClass(FakeStream::class)]
 final class FakeStreamTest extends TestCase
@@ -37,15 +43,31 @@ final class FakeStreamTest extends TestCase
         $stream = new FakeStream();
 
         $this->assertInstanceOf(StreamInterface::class, $stream);
+        $this->assertIsArray($stream->getMetadata());
         $this->assertSame('', $stream->getContents());
         $this->assertTrue($stream->isSeekable());
         $this->assertTrue($stream->isReadable());
-        $this->assertFalse($stream->isWritable());
+        $this->assertTrue($stream->isWritable());
         $this->assertSame(0, $stream->tell());
         $this->assertSame(0, $stream->getSize());
         $this->assertTrue($stream->eof());
         $this->assertSame(0, $stream->readCount);
         $this->assertEmpty($stream->readHistory);
+    }
+
+    #[Test]
+    public function getMetadata(): void
+    {
+        $stream = new FakeStream();
+
+        $meta = $stream->getMetadata();
+
+        $this->assertTrue($meta['readable']);
+        $this->assertTrue($meta['seekable']);
+        $this->assertTrue($meta['writable']);
+
+        $this->assertTrue($stream->getMetadata('readable'));
+        $this->assertNull($stream->getMetadata('missing'));
     }
 
     #[Test]
@@ -142,20 +164,27 @@ final class FakeStreamTest extends TestCase
     }
 
     #[Test]
-    public function metadataAlwaysNull(): void
+    public function seekMovesPointer(): void
     {
-        $stream = new FakeStream();
+        $stream = new FakeStream('abcdef');
+        $stream->seek(3);
 
-        $this->assertNull($stream->getMetadata());
-        $this->assertNull($stream->getMetadata('missing'));
+        $this->assertSame(3, $stream->tell());
+        $this->assertSame('def', $stream->getContents());
+
+        $stream->seek(-1, SEEK_END);
+
+        $this->assertSame(5, $stream->tell());
+        $this->assertSame('f', $stream->getContents());
     }
 
     #[Test]
-    public function seekDoesNothing(): void
+    public function seekThrowsWhenInvalid(): void
     {
-        $stream = new FakeStream('foo');
-        $stream->seek(100); // Does nothing by design // TODO è corretto!? si può simulare qualcosa?!
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot seek to position');
 
-        $this->assertSame(0, $stream->tell());
+        $stream = new FakeStream('foo');
+        $stream->seek(1000, SEEK_SET); // Out of bounds
     }
 }
