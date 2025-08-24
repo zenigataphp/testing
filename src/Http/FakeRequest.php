@@ -52,6 +52,7 @@ class FakeRequest extends FakeMessage implements RequestInterface
      * Returns a copy of the request with the specified request target.
      *
      * @param string $requestTarget The new request target.
+     * 
      * @return static The updated request instance.
      */
     public function withRequestTarget($requestTarget): static
@@ -76,6 +77,7 @@ class FakeRequest extends FakeMessage implements RequestInterface
      * Returns a copy of the request with the specified HTTP method.
      *
      * @param string $method The new HTTP method.
+     * 
      * @return static The updated request instance.
      */
     public function withMethod($method): static
@@ -101,6 +103,7 @@ class FakeRequest extends FakeMessage implements RequestInterface
      *
      * @param UriInterface $uri          The new request URI.
      * @param bool         $preserveHost Whether to keep the current "Host" header if present.
+     * 
      * @return static The updated request instance.
      */
     public function withUri(UriInterface $uri, $preserveHost = false): static

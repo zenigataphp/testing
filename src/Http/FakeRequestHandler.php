@@ -60,6 +60,8 @@ class FakeRequestHandler implements RequestHandlerInterface
      * Hook invoked before handling the request.
      *
      * @param ServerRequestInterface $request The incoming request.
+     * 
+     * @return void
      */
     protected function onHandle(ServerRequestInterface $request): void
     {
@@ -70,6 +72,8 @@ class FakeRequestHandler implements RequestHandlerInterface
      * Hook invoked before returning the response.
      *
      * @param ResponseInterface $response The outgoing response.
+     * 
+     * @return void
      */
     protected function onResponse(ResponseInterface $response): void
     {

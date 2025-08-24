@@ -68,6 +68,7 @@ class FakeContainer implements ContainerInterface
      * Determines whether the container has an entry for the given identifier.
      *
      * @param string $id Identifier of the service to check.
+     * 
      * @return bool True if an entry exists for the given ID, false otherwise.
      */
     public function has(string $id): bool

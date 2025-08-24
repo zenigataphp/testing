@@ -35,6 +35,7 @@ class FakeLogger extends AbstractLogger
      * @param mixed             $level   Log level (e.g "info", "error").
      * @param string|Stringable $message The log message.
      * @param array             $context Additional context data for the log entry.
+     * 
      * @return void
      */
     public function log($level, string|Stringable $message, array $context = []): void

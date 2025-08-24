@@ -35,6 +35,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Returns a new cache item if none exists for the given key.
      *
      * @param string $key The cache key.
+     * 
      * @return CacheItemInterface The cache item for the specified key.
      */
     public function getItem(string $key): CacheItemInterface
@@ -46,6 +47,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Retrieves multiple cache items by their keys.
      *
      * @param array<int, string> $keys List of cache keys to retrieve.
+     * 
      * @return iterable<string, CacheItemInterface> Iterable of cache items keyed by cache keys.
      */
     public function getItems(array $keys = []): iterable
@@ -63,6 +65,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Checks whether a cache item exists and is a hit for the given key.
      *
      * @param string $key The cache key.
+     * 
      * @return bool True if the cache item exists and is a hit, false otherwise.
      */
     public function hasItem(string $key): bool
@@ -86,6 +89,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Deletes a cache item by its key.
      *
      * @param string $key The cache key to delete.
+     * 
      * @return bool Always returns true.
      */
     public function deleteItem(string $key): bool
@@ -99,6 +103,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Deletes multiple cache items by their keys.
      *
      * @param array<int, string> $keys List of cache keys to delete.
+     * 
      * @return bool Always returns true.
      */
     public function deleteItems(array $keys): bool
@@ -114,6 +119,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Saves a cache item immediately.
      *
      * @param CacheItemInterface $item The cache item to save.
+     * 
      * @return bool Always returns true.
      */
     public function save(CacheItemInterface $item): bool
@@ -127,6 +133,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
      * Saves a cache item for deferred persistence.
      *
      * @param CacheItemInterface $item The cache item to save deferred.
+     * 
      * @return bool Always returns true.
      */
     public function saveDeferred(CacheItemInterface $item): bool

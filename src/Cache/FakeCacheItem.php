@@ -79,6 +79,7 @@ class FakeCacheItem implements CacheItemInterface
      * Marks the item as a cache hit.
      *
      * @param mixed $value The value to store.
+     * 
      * @return static Returns self for method chaining.
      */
     public function set(mixed $value): static
@@ -93,6 +94,7 @@ class FakeCacheItem implements CacheItemInterface
      * Sets the expiration time for this cache item.
      *
      * @param DateTimeInterface|null $expiration The expiration time or null for no expiration.
+     * 
      * @return static Returns self for method chaining.
      */
     public function expiresAt(?DateTimeInterface $expiration): static
@@ -106,6 +108,7 @@ class FakeCacheItem implements CacheItemInterface
      * Sets the expiration time for this cache item relative to the current time.
      *
      * @param int|DateInterval|null $time Time to expiration as seconds, interval, or null for no expiration.
+     * 
      * @return static Returns self for method chaining.
      */
     public function expiresAfter(int|DateInterval|null $time): static

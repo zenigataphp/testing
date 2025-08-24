@@ -74,6 +74,7 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
      * Returns a new instance with the specified cookies.
      *
      * @param array $cookies Associative array of cookie names to values.
+     * 
      * @return static The updated server request instance.
      */
     public function withCookieParams(array $cookies): static
@@ -98,6 +99,7 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
      * Returns a new instance with the specified query string parameters.
      *
      * @param array $query Associative array of query parameter names to values.
+     * 
      * @return static The updated server request instance.
      */
     public function withQueryParams(array $query): static
@@ -122,6 +124,7 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
      * Returns a new instance with the specified uploaded files.
      *
      * @param array $uploadedFiles Array of {@see UploadedFileInterface} instances.
+     * 
      * @return static The updated server request instance.
      */
     public function withUploadedFiles(array $uploadedFiles): static
@@ -146,6 +149,7 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
      * Returns a new instance with the specified parsed body content.
      *
      * @param mixed $data The deserialized body data.
+     * 
      * @return static The updated server request instance.
      */
     public function withParsedBody($data): static
@@ -169,8 +173,9 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
     /**
      * Retrieves a specific request attribute.
      *
-     * @param string $name Attribute name.
-     * @param mixed $default Default value if attribute is not present.
+     * @param string $name    Attribute name.
+     * @param mixed  $default Default value if attribute is not present.
+     * 
      * @return mixed The attribute value or the default if not found.
      */
     public function getAttribute($name, $default = null): mixed
@@ -181,8 +186,9 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
     /**
      * Returns a new instance with the specified attribute set.
      *
-     * @param string $name Attribute name.
-     * @param mixed $value Attribute value.
+     * @param string $name  Attribute name.
+     * @param mixed  $value Attribute value.
+     * 
      * @return static The updated server request instance.
      */
     public function withAttribute($name, $value): static
@@ -197,6 +203,7 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
      * Returns a new instance without the specified attribute.
      *
      * @param string $name Attribute name to remove.
+     * 
      * @return static The updated server request instance.
      */
     public function withoutAttribute($name): static

@@ -164,6 +164,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified scheme.
      *
      * @param string $scheme New scheme.
+     * 
      * @return static The updated uri instance.
      */
     public function withScheme($scheme): static
@@ -177,8 +178,9 @@ class FakeUri implements UriInterface
     /**
      * Returns a new instance with the specified user info.
      *
-     * @param string $user User name.
+     * @param string      $user     User name.
      * @param string|null $password Optional password.
+     * 
      * @return static The updated uri instance. 
      */
     public function withUserInfo(string $user, $password = null): static
@@ -193,6 +195,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified host.
      *
      * @param string $host New host.
+     * 
      * @return static The updated uri instance.
      */
     public function withHost($host): static
@@ -207,6 +210,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified port.
      *
      * @param int|null $port New port or null to remove.
+     * 
      * @return static The updated uri instance.
      */
     public function withPort($port): static
@@ -221,6 +225,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified path.
      *
      * @param string $path New path.
+     * 
      * @return static The updated uri instance.
      */
     public function withPath($path): static
@@ -235,6 +240,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified query string.
      *
      * @param string $query New query string without leading '?'.
+     * 
      * @return static The updated uri instance.
      */
     public function withQuery($query): static
@@ -249,6 +255,7 @@ class FakeUri implements UriInterface
      * Returns a new instance with the specified fragment.
      *
      * @param string $fragment New fragment without leading '#'.
+     * 
      * @return static The updated uri instance.
      */
     public function withFragment($fragment): static

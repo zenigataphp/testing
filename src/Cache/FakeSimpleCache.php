@@ -36,6 +36,7 @@ class FakeSimpleCache implements CacheInterface
      *
      * @param string $key     The cache key.
      * @param mixed  $default Default value to return if the key is not found or expired.
+     * 
      * @return mixed The cached value, or $default if not found.
      */
     public function get(string $key, mixed $default = null): mixed
@@ -60,6 +61,7 @@ class FakeSimpleCache implements CacheInterface
      * @param string                $key   The cache key.
      * @param mixed                 $value The value to store.
      * @param null|int|DateInterval $ttl   Optional TTL in seconds or as DateInterval.
+     * 
      * @return bool Always returns true.
      */
     public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
@@ -74,6 +76,7 @@ class FakeSimpleCache implements CacheInterface
      * Deletes a value from the cache.
      *
      * @param string $key The cache key.
+     * 
      * @return bool Always returns true.
      */
     public function delete(string $key): bool
@@ -100,6 +103,7 @@ class FakeSimpleCache implements CacheInterface
      *
      * @param iterable<string> $keys    The cache keys.
      * @param mixed            $default Default value for missing or expired keys.
+     * 
      * @return iterable<string, mixed> Associative array of key-value pairs.
      */
     public function getMultiple(iterable $keys, mixed $default = null): iterable
@@ -118,6 +122,7 @@ class FakeSimpleCache implements CacheInterface
      *
      * @param iterable<string, mixed> $values Key-value pairs to store.
      * @param null|int|DateInterval   $ttl    Optional TTL in seconds or as DateInterval.
+     * 
      * @return bool Always returns true.
      */
     public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
@@ -133,6 +138,7 @@ class FakeSimpleCache implements CacheInterface
      * Deletes multiple values from the cache.
      *
      * @param iterable<string> $keys The cache keys to delete.
+     * 
      * @return bool Always returns true.
      */
     public function deleteMultiple(iterable $keys): bool
@@ -148,6 +154,7 @@ class FakeSimpleCache implements CacheInterface
      * Checks if a cache key exists and is not expired.
      *
      * @param string $key The cache key.
+     * 
      * @return bool True if the key exists and is valid, false otherwise.
      */
     public function has(string $key): bool

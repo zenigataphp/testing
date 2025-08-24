@@ -58,8 +58,9 @@ class FakeResponse extends FakeMessage implements ResponseInterface
     /**
      * Returns a new instance with the specified status code and optional reason phrase.
      *
-     * @param int $code New HTTP status code.
+     * @param int    $code         New HTTP status code.
      * @param string $reasonPhrase Optional reason phrase; if empty, the status code's default is used.
+     * 
      * @return static The updated response instance.
      */
     public function withStatus($code, $reasonPhrase = ''): static
