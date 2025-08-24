@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Http;
 
+use const SEEK_CUR;
+use const SEEK_END;
 use const SEEK_SET;
 
 use function strlen;
@@ -41,14 +43,14 @@ class FakeStream implements StreamInterface
      * @param string $contents Initial stream content (default: "").
      * @param bool   $seekable Whether the stream supports seeking (default: true).
      * @param bool   $readable Whether the stream supports reading (default: true).
-     * @param bool   $writable Whether the stream supports writing (default: false).
+     * @param bool   $writable Whether the stream supports writing (default: true).
      * @param int    $pointer  Initial read/write position (default: 0).
      */
     public function __construct(
         private string $contents = '',
         private bool $seekable = true,
         private bool $readable = true,
-        private bool $writable = false,
+        private bool $writable = true,
         private int $pointer = 0
     ) {}
 
@@ -115,15 +117,12 @@ class FakeStream implements StreamInterface
     /**
      * Resets the pointer to the beginning of the stream.
      *
+     * @return void
      * @throws RuntimeException If the stream is not seekable.
      */
     public function rewind(): void
     {
-        if (!$this->seekable) {
-            throw new RuntimeException("Stream is not seekable.");
-        }
-
-        $this->pointer = 0;
+        $this->seek(0);
     }
 
     /**
@@ -132,6 +131,7 @@ class FakeStream implements StreamInterface
      * Tracks the read operation count and stores the read chunk.
      *
      * @param int $length Maximum number of bytes to read.
+     * 
      * @return string Data read from the stream.
      */
     public function read($length): string
@@ -148,7 +148,9 @@ class FakeStream implements StreamInterface
     /**
      * Closes the stream.
      *
-     * No operation needed in this implementation.
+     * No-op in this fake implementation.
+     * 
+     * @return void
      */
     public function close(): void
     {
@@ -158,26 +160,40 @@ class FakeStream implements StreamInterface
     /**
      * Detaches the underlying resource.
      *
-     * Not applicable in this implementation.
+     * In this fake stream, clears the buffer and disables capabilities.
      *
-     * @return void
+     * @return null Always returns null, since no real resource is used.
      */
     public function detach()
     {
-        return;
+        $this->contents = '';
+        $this->pointer = 0;
+        $this->readable = false;
+        $this->seekable = false;
+        $this->writable = false;
+
+        return null;
     }
     
     /**
      * Writes data to the stream, appending to existing contents.
      *
      * @param string $string Data to write.
+     * 
      * @return int The number of bytes written.
+     * @throws RuntimeException If the stream is not writable.
      */
     public function write($string): int 
     {
+        if (!$this->writable) {
+            throw new RuntimeException("Stream is not writable.");
+        }
+
         $this->contents .= $string;
+        $written = strlen($string);
+        $this->pointer += $written;
         
-        return strlen($string);
+        return $written;
     }
 
     /**
@@ -203,26 +219,53 @@ class FakeStream implements StreamInterface
     /**
      * Seeks to a position in the stream.
      *
-     * No operation needed in this implementation.
-     *
      * @param int $offset The stream offset to seek to.
-     * @param int $whence Positioning mode; defaults to SEEK_SET.
+     * @param int $whence Positioning mode; one of SEEK_SET, SEEK_CUR, SEEK_END.
+     * 
+     * @return void
+     * @throws RuntimeException If the stream is not seekable or offset is invalid.
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-        return;
+        if (!$this->seekable) {
+            throw new RuntimeException("Stream is not seekable.");
+        }
+
+        $length = strlen($this->contents);
+
+        $pointer = match ($whence) {
+            SEEK_SET => $offset,
+            SEEK_CUR => $this->pointer + $offset,
+            SEEK_END => $length + $offset,
+            default => throw new RuntimeException("Invalid whence argument.")
+        };
+
+        if ($pointer < 0 || $pointer > $length) {
+            throw new RuntimeException("Cannot seek to position $pointer; out of bounds.");
+        }
+
+        $this->pointer = $pointer;
     }
     
     /**
      * Retrieves stream metadata or a specific metadata key.
      *
-     * Always returns null in this implementation.
-     *
      * @param string|null $key Optional metadata key.
-     * @return mixed Always null.
+     * 
+     * @return array|string|bool|null Stream metadata, or a single value if $key is provided.
      */
     public function getMetadata($key = null)
     {
-        return null;
+        $meta = [
+            'readable' => $this->readable,
+            'seekable' => $this->seekable,
+            'writable' => $this->writable,
+            'uri' => null,
+            'mode' => null,
+        ];
+
+        return $key !== null
+            ? $meta[$key] ?? null
+            : $meta;
     }
 }
