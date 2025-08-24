@@ -13,13 +13,15 @@ use Zenigata\Testing\Http\FakeUri;
 /**
  * Unit test for {@see FakeRequest}.
  *
- * Verifies the behavior of the fake PSR-7 request implementation, covering:
+ * Verifies the behavior of the fake PSR-7 request implementation.
+ * 
+ * Covered cases:
  *
  * - Default method, request target, and URI instance.
  * - Immutability when changing the HTTP method.
- * - Changing the request target via {@see FakeRequest::withRequestTarget()}.
- * - Updating the URI and automatically setting the Host header.
- * - Preserving the original Host header when requested.
+ * - Change the request target via {@see FakeRequest::withRequestTarget()}.
+ * - Update the URI and automatically setting the Host header.
+ * - Preserve the original Host header when requested.
  */
 #[CoversClass(FakeRequest::class)]
 final class FakeRequestTest extends TestCase

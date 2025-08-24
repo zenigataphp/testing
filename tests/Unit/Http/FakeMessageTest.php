@@ -15,7 +15,9 @@ use Zenigata\Testing\Http\FakeStream;
 /**
  * Unit test for {@see FakeMessage}.
  *
- * Validates the behavior of the fake PSR-7 message implementation, covering:
+ * Validates the behavior of the fake PSR-7 message implementation.
+ * 
+ * Covered cases:
  *
  * - Default state, including empty headers, default body, and protocol version.
  * - Header access, retrieval, and string concatenation.

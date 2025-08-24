@@ -13,14 +13,16 @@ use Zenigata\Testing\Http\FakeUri;
 /**
  * Unit test for {@see FakeUri}.
  *
- * Verifies the behavior of the fake PSR-7 URI implementation, covering:
+ * Verifies the behavior of the fake PSR-7 URI implementation.
+ * 
+ * Covered cases:
  *
  * - Default values for scheme, host, path, port, user info, query, fragment, and string representation.
- * - Returning constructor-provided values for all URI components.
+ * - Return constructor-provided values for all URI components.
  * - Correct formatting of the authority component, including user info and port.
- * - Building the full URI string from all components.
- * - Immutability of `with*` methods, returning modified clones with updated components.
- * - Handling of `withUserInfo()` when the password is omitted.
+ * - Build the full URI string from all components.
+ * - Immutability of `with*` methods, which return modified clones with updated components.
+ * - Handle of `withUserInfo()` when the password is omitted.
  */
 #[CoversClass(FakeUri::class)]
 final class FakeUriTest extends TestCase

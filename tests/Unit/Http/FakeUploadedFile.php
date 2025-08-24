@@ -16,14 +16,16 @@ use Zenigata\Testing\Http\FakeUploadedFile;
 /**
  * Unit test for {@see FakeUploadedFile}.
  *
- * Verifies the behavior of the fake PSR-7 uploaded file implementation, covering:
+ * Verifies the behavior of the fake PSR-7 uploaded file implementation.
+ * 
+ * Covered cases:
  *
  * - Default state: injected stream, null size, default error code, null filename and media type.
- * - Returning an explicitly provided stream.
- * - Returning explicit size if set, or falling back to the stream size.
- * - Defaulting size to zero when not explicitly provided and the stream is empty.
- * - Returning the provided upload error code.
- * - Handling of client filename and media type (both set and null).
+ * - Return an explicitly provided stream.
+ * - Return explicit size if set, or falling back to the stream size.
+ * - Default size to zero when not explicitly provided and the stream is empty.
+ * - Return the provided upload error code.
+ * - Handle of client filename and media type (both set and null).
  * - No-op behavior of {@see FakeUploadedFile::moveTo()}.
  */
 #[CoversClass(FakeUploadedFile::class)]

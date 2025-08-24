@@ -14,12 +14,14 @@ use Zenigata\Testing\Infrastructure\FakeContainer;
 /**
  * Unit test for {@see FakeContainer}.
  *
- * Verifies the behavior of the fake PSR-11 container implementation, including:
+ * Verifies the behavior of the fake PSR-11 container implementation.
+ * 
+ * Covered cases:
  *
- * - Returning stored services when present.
- * - Throwing a {@see NotFoundExceptionInterface} when a service is missing.
- * - Throwing if initialized injecting a non associative array of entries.
- * - Correctly handling `null` as a stored value.
+ * - Return stored services when present.
+ * - Throw a {@see NotFoundExceptionInterface} when a service is missing.
+ * - Throw if initialized injecting a non associative array of entries.
+ * - Correctly handle `null` as a stored value.
  */
 #[CoversClass(FakeContainer::class)]
 final class FakeContainerTest extends TestCase

@@ -14,14 +14,16 @@ use Zenigata\Testing\Cache\FakeCacheItem;
 /**
  * Unit test for {@see FakeCacheItem}.
  *
- * Verifies the behavior of the fake PSR-6 cache item implementation, including:
+ * Verifies the behavior of the fake PSR-6 cache item implementation.
+ * 
+ * Covered cases:
  *
- * - Returning the given key and value via `getKey()` and `get()`.
- * - Reports hit/miss status via `isHit()` based on the hit flag and expiration time.
- * - Updating value and hit status via `set()`.
- * - Setting absolute expiration via `expiresAt()`.
- * - Disabling expiration via `expiresAfter(null)`.
- * - Setting relative expiration via `expiresAfter()` with seconds or `DateInterval`.
+ * - Return the given key and value via `getKey()` and `get()`.
+ * - Report hit/miss status via `isHit()` based on the hit flag and expiration time.
+ * - Update value and hit status via `set()`.
+ * - Set absolute expiration via `expiresAt()`.
+ * - Disable expiration via `expiresAfter(null)`.
+ * - Set relative expiration via `expiresAfter()` with seconds or `DateInterval`.
  */
 #[CoversClass(FakeCacheItem::class)]
 final class FakeCacheItemTest extends TestCase

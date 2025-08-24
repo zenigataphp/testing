@@ -13,13 +13,15 @@ use Zenigata\Testing\Http\FakeStream;
 /**
  * Unit test for {@see FakeResponse}.
  *
- * Verifies the behavior of the fake PSR-7 response implementation, covering:
+ * Verifies the behavior of the fake PSR-7 response implementation.
+ * 
+ * Covered cases:
  *
  * - Default status code and reason phrase.
  * - Immutability when changing status code and reason phrase via {@see FakeResponse::withStatus()}.
- * - Overriding the reason phrase explicitly.
- * - Allowing an empty reason phrase.
- * - Ensuring headers, body, and protocol version are preserved when changing status.
+ * - Override the reason phrase explicitly.
+ * - Allow an empty reason phrase.
+ * - Ensure headers, body, and protocol version are preserved when changing status.
  */
 #[CoversClass(FakeResponse::class)]
 final class FakeResponseTest extends TestCase

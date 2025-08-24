@@ -12,16 +12,18 @@ use Zenigata\Testing\Http\FakeServerRequest;
 /**
  * Unit test for {@see FakeServerRequest}.
  *
- * Validates the behavior of the fake PSR-7 server request implementation, covering:
+ * Validates the behavior of the fake PSR-7 server request implementation.
+ * 
+ * Covered cases:
  *
  * - Default values for server parameters, cookies, query parameters, uploaded files,
  *   parsed body, and attributes.
  * - Attribute retrieval with and without default values.
  * - Immutability when adding or removing attributes.
- * - Setting and retrieving cookie parameters.
- * - Setting and retrieving query parameters.
- * - Setting and retrieving uploaded files.
- * - Setting and retrieving the parsed body.
+ * - Set and retrieve cookie parameters.
+ * - Set and retrieve query parameters.
+ * - Set and retrieve uploaded files.
+ * - Set and retrieve the parsed body.
  */
 #[CoversClass(FakeServerRequest::class)]
 final class FakeServerRequestTest extends TestCase

@@ -13,11 +13,13 @@ use Zenigata\Testing\Infrastructure\FakeClock;
 /**
  * Unit test for {@see FakeClock}.
  *
- * Verifies the behavior of the fake PSR-20 clock implementation, including:
+ * Verifies the behavior of the fake PSR-20 clock implementation.
+ * 
+ * Covered cases:
  *
- * - Returning the current time by default.
- * - Accepting a fixed time via {@see DateTimeImmutable} or string.
- * - Returning consistent results for the provided fixed time.
+ * - Return the current time by default.
+ * - Accept a fixed time via {@see DateTimeImmutable} or string.
+ * - Return consistent results for the provided fixed time.
  */
 #[CoversClass(FakeClock::class)]
 final class FakeClockTest extends TestCase

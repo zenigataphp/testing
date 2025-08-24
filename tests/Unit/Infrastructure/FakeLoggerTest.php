@@ -13,12 +13,14 @@ use Zenigata\Testing\Infrastructure\FakeLogger;
 /**
  * Unit test for {@see FakeLogger}.
  *
- * Verifies the behavior of the fake PSR-3 logger implementation, including:
+ * Verifies the behavior of the fake PSR-3 logger implementation.
+ * 
+ * Covered cases:
  *
- * - Logging messages at various levels with string and {@see Stringable} inputs.
- * - Formatting log entries with level, message, and context data.
- * - Handling empty context arrays.
- * - Tracking logged messages through the output stack.
+ * - Log messages at various levels with string and {@see Stringable} inputs.
+ * - Format log entries with level, message, and context data.
+ * - Handle empty context arrays.
+ * - Track logged messages through the output stack.
  */
 #[CoversClass(FakeLogger::class)]
 final class FakeLoggerTest extends TestCase

@@ -17,11 +17,13 @@ use Zenigata\Testing\Http\FakeServerRequest;
 /**
  * Unit test for {@see FakeRequestHandler}.
  *
- * Verifies the behavior of the fake PSR-15 request handler implementation, including:
+ * Verifies the behavior of the fake PSR-15 request handler implementation.
+ * 
+ * Covered cases:
  *
  * - Default instantiation as a valid {@see RequestHandlerInterface}.
- * - Returning a default fake response when no custom response is provided.
- * - Returning a custom response when injected via the constructor.
+ * - Return a default fake response when no custom response is provided.
+ * - Return a custom response when injected via the constructor.
  * - Correct execution of `onHandle()` and `onResponse()` hooks.
  */
 #[CoversClass(FakeRequestHandler::class)]

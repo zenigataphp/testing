@@ -13,17 +13,19 @@ use Zenigata\Testing\Cache\FakeSimpleCache;
 /**
  * Unit test for {@see FakeSimpleCache}.
  *
- * Verifies the behavior of the fake PSR-16 simple cache implementation, including:
+ * Verifies the behavior of the fake PSR-16 simple cache implementation.
+ * 
+ * Covered cases:
  *
  * - Default state with no stored items.
- * - Retrieving stored values with `get()` and returning a default when missing.
- * - Storing values with `set()`.
- * - Detecting key presence with `has()`.
- * - Removing single items with `delete()` and all items with `clear()`.
- * - Retrieving multiple values with `getMultiple()`, including defaults for missing keys.
- * - Storing multiple values with `setMultiple()`.
- * - Removing multiple items with `deleteMultiple()`.
- * - Handling item expiration via TTL (both `DateInterval` and immediate expiry).
+ * - Retrieve stored values with `get()` and returning a default when missing.
+ * - Store values with `set()`.
+ * - Detect key presence with `has()`.
+ * - Remove single items with `delete()` and all items with `clear()`.
+ * - Retrieve multiple values with `getMultiple()`, including defaults for missing keys.
+ * - Store multiple values with `setMultiple()`.
+ * - Remove multiple items with `deleteMultiple()`.
+ * - Handle item expiration via TTL (both `DateInterval` and immediate expiry).
  */
 #[CoversClass(FakeSimpleCache::class)]
 final class FakeSimpleCacheTest extends TestCase

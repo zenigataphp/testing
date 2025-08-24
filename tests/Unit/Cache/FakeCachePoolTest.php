@@ -13,16 +13,18 @@ use Zenigata\Testing\Cache\FakeCachePool;
 /**
  * Unit test for {@see FakeCachePool}.
  *
- * Verifies the behavior of the fake PSR-6 cache pool implementation, including:
+ * Verifies the behavior of the fake PSR-6 cache pool implementation.
+ * 
+ * Covered cases:
  *
  * - Default state with no stored or deferred items.
- * - Creating and returning new items via `getItem()` when missing.
- * - Storing and retrieving items via `save()`.
- * - Checking item existence with `hasItem()`.
- * - Clearing all stored items with `clear()`.
- * - Deleting single or multiple items via `deleteItem()` and `deleteItems()`.
- * - Returning multiple items via `getItems()`, including missing keys.
- * - Deferring items with `saveDeferred()` and moving them to storage via `commit()`.
+ * - Create and returning new items via `getItem()` when missing.
+ * - Store and retrieving items via `save()`.
+ * - Check item existence with `hasItem()`.
+ * - Clear all stored items with `clear()`.
+ * - Delete single or multiple items via `deleteItem()` and `deleteItems()`.
+ * - Return multiple items via `getItems()`, including missing keys.
+ * - Defer items with `saveDeferred()` and moving them to storage via `commit()`.
  */
 #[CoversClass(FakeCachePool::class)]
 final class FakeCachePoolTest extends TestCase

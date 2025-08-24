@@ -19,7 +19,9 @@ use Zenigata\Testing\Http\FakeServerRequest;
 /**
  * Unit test for {@see FakeMiddleware}.
  *
- * Verifies the behavior of the fake PSR-15 middleware implementation, covering:
+ * Verifies the behavior of the fake PSR-15 middleware implementation.
+ * 
+ * Covered cases:
  *
  * - Default instantiation and type compliance.
  * - Delegation of request processing to the provided request handler.

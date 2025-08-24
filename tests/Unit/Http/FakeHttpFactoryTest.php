@@ -29,12 +29,29 @@ use Zenigata\Testing\Http\FakeServerRequest;
 
 /**
  * Unit test for {@see FakeHttpFactory}.
+ *
+ * Validates the behavior of the fake PSR-17 HTTP factory implementation,
+ * ensuring that it produces the correct fake PSR-7 objects.
  * 
- * // TODO
+ * Covered cases:
+ *
+ * - Request creation with method and URI, returning {@see FakeRequest}.
+ * - Response creation with status code and reason phrase, returning {@see FakeResponse}.
+ * - Server request creation with method, URI, and server params, returning {@see FakeServerRequest}.
+ * - Stream creation from strings, files, file URIs, and resources, returning {@see FakeStream}.
+ * - Error handling when creating streams from invalid or unreadable sources.
+ * - Uploaded file creation with size, error code, filename, and media type, returning {@see FakeUploadedFile}.
+ * - URI creation from strings with full components, returning {@see FakeUri}.
+ * - URI creation from empty strings with default empty components.
  */
 #[CoversClass(FakeHttpFactory::class)]
 final class FakeHttpFactoryTest extends TestCase
 {
+    /**
+     * Fake http factory instance under test.
+     *
+     * @var FakeHttpFactory
+     */
     private FakeHttpFactory $factory;
 
     /**
