@@ -74,7 +74,7 @@ class FakeCacheItem implements CacheItemInterface
     }
 
     /**
-     * Sets the value represented by this cache item.
+     * Stores the value represented by this cache item.
      *
      * Marks the item as a cache hit.
      *
@@ -91,7 +91,7 @@ class FakeCacheItem implements CacheItemInterface
     }
 
     /**
-     * Sets the expiration time for this cache item.
+     * Stores the expiration time for this cache item.
      *
      * @param DateTimeInterface|null $expiration The expiration time or null for no expiration.
      * 
@@ -105,7 +105,7 @@ class FakeCacheItem implements CacheItemInterface
     }
 
     /**
-     * Sets the expiration time for this cache item relative to the current time.
+     * Stores the expiration time for this cache item relative to the current time.
      *
      * @param int|DateInterval|null $time Time to expiration as seconds, interval, or null for no expiration.
      * 

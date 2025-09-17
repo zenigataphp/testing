@@ -24,6 +24,7 @@ class FakeSimpleCache implements CacheInterface
      * Internal cache storage.
      * 
      * Each entry is stored as an array of two elements:
+     * 
      *  - mixed               The cached value.
      *  - ?DateTimeImmutable  The expiration timestamp, or null for no expiration.
      *

@@ -20,12 +20,12 @@ class FakeRequest extends FakeMessage implements RequestInterface
     /**
      * Creates a new fake HTTP request instance.
      *
-     * @param string                 $method        HTTP method (default: "GET").
-     * @param UriInterface           $uri           Request URI.
-     * @param string                 $requestTarget Request target, path or full URI (default: "/").
-     * @param array<string,string[]> $headers       Initial headers.
-     * @param StreamInterface|null   $body          Optional message body stream.
-     * @param string                 $protocol      HTTP protocol version (default: "1.1").
+     * @param string                  $method        HTTP method (default: "GET").
+     * @param UriInterface            $uri           Request URI.
+     * @param string                  $requestTarget Request target, path or full URI (default: "/").
+     * @param array<string, string[]> $headers       Initial headers.
+     * @param StreamInterface|null    $body          Optional message body stream.
+     * @param string                  $protocol      HTTP protocol version (default: "1.1").
      */
     public function __construct(
         private string $method = 'GET',

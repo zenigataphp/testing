@@ -61,9 +61,9 @@ class FakeHttpFactory implements
     /**
      * {@inheritDoc}
      */
-    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    public function createResponse(int $statusCode = 200, string $reasonPhrase = 'OK'): ResponseInterface
     {
-        return new FakeResponse($code, $reasonPhrase ?: 'OK');
+        return new FakeResponse($statusCode, $reasonPhrase);
     }
 
     /**
@@ -73,8 +73,8 @@ class FakeHttpFactory implements
     {
         return new FakeServerRequest(
             serverParams: $serverParams,
-            method: $method,
-            uri: $uri instanceof UriInterface ? $uri : new FakeUri()
+            method:       $method,
+            uri:          $uri instanceof UriInterface ? $uri : new FakeUri()
         );
     }
 
@@ -151,10 +151,10 @@ class FakeHttpFactory implements
         ?string $clientMediaType = null
     ): UploadedFileInterface {
         return new FakeUploadedFile(
-            stream: $stream,
-            size: $size ?? $stream->getSize() ?? 0,
-            error: $error,
-            clientFilename: $clientFilename,
+            stream:          $stream,
+            size:            $size ?? $stream->getSize() ?? 0,
+            error:           $error,
+            clientFilename:  $clientFilename,
             clientMediaType: $clientMediaType
         );
     }
@@ -170,12 +170,12 @@ class FakeHttpFactory implements
         $pass = $parsed['pass'] ?? '';
 
         return new FakeUri(
-            scheme: $parsed['scheme'] ?? '',
+            scheme:   $parsed['scheme'] ?? '',
             userInfo: $pass ? "$user:$pass" : $user,
-            host: $parsed['host'] ?? '',
-            port: $parsed['port'] ?? null,
-            path: $parsed['path'] ?? '',
-            query: $parsed['query'] ?? '',
+            host:     $parsed['host'] ?? '',
+            port:     $parsed['port'] ?? null,
+            path:     $parsed['path'] ?? '',
+            query:    $parsed['query'] ?? '',
             fragment: $parsed['fragment'] ?? ''
         );
     }

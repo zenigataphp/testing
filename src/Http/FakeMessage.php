@@ -89,7 +89,7 @@ class FakeMessage implements MessageInterface
     /**
      * Returns all headers as an associative array: name => array of values.
      *
-     * @return array<string,string[]> The headers array.
+     * @return array<string, string[]> The headers array.
      */
     public function getHeaders(): array
     {
