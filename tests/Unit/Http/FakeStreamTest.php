@@ -7,9 +7,15 @@ namespace Zenigata\Testing\Test\Unit\Http;
 use const SEEK_END;
 use const SEEK_SET;
 
+use function fclose;
+use function fopen;
+use function fwrite;
+use function is_resource;
+use function rewind;
+use function stream_get_contents;
+
 use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeStream;
@@ -33,12 +39,12 @@ use Zenigata\Testing\Http\FakeStream;
  * - Metadata retrieval supports full array, specific keys, and null for missing keys.
  * - Seek operation moves the pointer correctly (SEEK_SET, SEEK_CUR, SEEK_END).
  * - Seek throws RuntimeException when attempting to move out of bounds.
+ * - Resource-backed streams: read, write, seek, tell, size, and EOF behavior.
  */
 #[CoversClass(FakeStream::class)]
 final class FakeStreamTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $stream = new FakeStream();
 
@@ -55,7 +61,6 @@ final class FakeStreamTest extends TestCase
         $this->assertEmpty($stream->readHistory);
     }
 
-    #[Test]
     public function getMetadata(): void
     {
         $stream = new FakeStream();
@@ -70,24 +75,43 @@ final class FakeStreamTest extends TestCase
         $this->assertNull($stream->getMetadata('missing'));
     }
 
-    #[Test]
-    public function toStringReturnsContent(): void
+    public function testToStringReturnsContent(): void
     {
         $stream = new FakeStream('foo');
 
         $this->assertSame('foo', (string) $stream);
     }
 
-    #[Test]
-    public function getSizeReturnsCorrectLength(): void
+    public function testGetContentsReturnsRemainingFromPointer(): void
+    {
+        $stream = new FakeStream('abcdef');
+        $stream->read(2);
+
+        $this->assertSame('cdef', $stream->getContents());
+    }
+
+
+    public function testGetSizeReturnsCorrectLength(): void
     {
         $stream = new FakeStream('foo');
 
         $this->assertSame(3, $stream->getSize());
     }
 
-    #[Test]
-    public function readReturnsPortionAndUpdatesPointer(): void
+    public function testGetSizeReturnsResourceSize(): void
+    {
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'foobar');
+        rewind($resource);
+
+        $stream = new FakeStream($resource);
+
+        $this->assertSame(6, $stream->getSize());
+
+        fclose($resource);
+    }
+
+    public function testReadReturnsPortionAndUpdatesPointer(): void
     {
         $stream = new FakeStream('abcdef');
 
@@ -101,17 +125,23 @@ final class FakeStreamTest extends TestCase
         $this->assertTrue($stream->eof());
     }
 
-    #[Test]
-    public function getContentsReturnsRemainingFromPointer(): void
+    public function testReadFromResourceStream(): void
     {
-        $stream = new FakeStream('abcdef');
-        $stream->read(2);
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'abcdef');
+        rewind($resource);
 
-        $this->assertSame('cdef', $stream->getContents());
+        $stream = new FakeStream($resource);
+        $chunk = $stream->read(3);
+
+        $this->assertSame('abc', $chunk);
+        $this->assertSame(1, $stream->readCount);
+        $this->assertSame(['abc'], $stream->readHistory);
+
+        fclose($resource);
     }
 
-    #[Test]
-    public function eofReturnsTrueWhenPointerAtEnd(): void
+    public function testEofReturnsTrueWhenPointerAtEnd(): void
     {
         $stream = new FakeStream('xyz');
         $stream->read(3);
@@ -119,8 +149,7 @@ final class FakeStreamTest extends TestCase
         $this->assertTrue($stream->eof());
     }
 
-    #[Test]
-    public function rewindResetsPointer(): void
+    public function testRewindResetsPointer(): void
     {
         $stream = new FakeStream('12345');
         $stream->read(5);
@@ -133,8 +162,7 @@ final class FakeStreamTest extends TestCase
         $this->assertSame('12345', $stream->read(5));
     }
 
-    #[Test]
-    public function rewindThrowsWhenNotSeekable(): void
+    public function testRewindThrowsWhenNotSeekable(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Stream is not seekable.');
@@ -143,8 +171,7 @@ final class FakeStreamTest extends TestCase
         $stream->rewind();
     }
 
-    #[Test]
-    public function writeAppendsToStream(): void
+    public function testWriteAppendsToStream(): void
     {
         $stream = new FakeStream('abc', writable: true);
         $written = $stream->write('def');
@@ -153,8 +180,22 @@ final class FakeStreamTest extends TestCase
         $this->assertSame('abcdef', (string) $stream);
     }
 
-    #[Test]
-    public function isSeekableReadableWritable(): void
+    public function testWriteToResourceStream(): void
+    {
+        $resource = fopen('php://memory', 'r+');
+
+        $stream = new FakeStream($resource);
+        $written = $stream->write('xyz');
+
+        $this->assertSame(3, $written);
+
+        rewind($resource);
+        $this->assertSame('xyz', stream_get_contents($resource));
+
+        fclose($resource);
+    }
+
+    public function testIsSeekableReadableWritable(): void
     {
         $stream = new FakeStream(seekable: false, readable: false, writable: true);
 
@@ -163,8 +204,7 @@ final class FakeStreamTest extends TestCase
         $this->assertTrue($stream->isWritable());
     }
 
-    #[Test]
-    public function seekMovesPointer(): void
+    public function testSeekMovesPointer(): void
     {
         $stream = new FakeStream('abcdef');
         $stream->seek(3);
@@ -178,13 +218,42 @@ final class FakeStreamTest extends TestCase
         $this->assertSame('f', $stream->getContents());
     }
 
-    #[Test]
-    public function seekThrowsWhenInvalid(): void
+    public function testSeekTellEofWithResource(): void
+    {
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, '12345');
+        rewind($resource);
+
+        $stream = new FakeStream($resource);
+
+        $stream->seek(2, SEEK_SET);
+        $this->assertSame(2, $stream->tell());
+
+        $stream->seek(-1, SEEK_END);
+        $this->assertSame(4, $stream->tell());
+
+        $stream->read(1);
+        $this->assertTrue($stream->eof());
+
+        fclose($resource);
+    }
+
+    public function testSeekThrowsWhenInvalid(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot seek to position');
 
         $stream = new FakeStream('foo');
         $stream->seek(1000, SEEK_SET); // Out of bounds
+    }
+
+    public function testCloseReleasesResource(): void
+    {
+        $resource = fopen('php://memory', 'r+');
+
+        $stream = new FakeStream($resource);
+        $stream->close();
+
+        $this->assertFalse(is_resource($stream->detach()));
     }
 }
