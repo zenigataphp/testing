@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Infrastructure;
+namespace Zenigata\Testing;
 
 use function is_string;
 
@@ -42,8 +42,8 @@ class FakeClock implements ClockInterface
 
         $this->now = match (true) {
             $now instanceof DateTimeImmutable => $now,
-            is_string($now) => new DateTimeImmutable($now),
-            default => new DateTimeImmutable(),
+            is_string($now)                   => new DateTimeImmutable($now),
+            default                           => new DateTimeImmutable()
         };
     }
 

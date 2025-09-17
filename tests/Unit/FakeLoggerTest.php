@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit\Infrastructure;
+namespace Zenigata\Testing\Test\Unit;
 
 use Stringable;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Zenigata\Testing\Infrastructure\FakeLogger;
+use Zenigata\Testing\FakeLogger;
 
 /**
  * Unit test for {@see FakeLogger}.
@@ -25,16 +24,14 @@ use Zenigata\Testing\Infrastructure\FakeLogger;
 #[CoversClass(FakeLogger::class)]
 final class FakeLoggerTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $logger = new FakeLogger();
 
         $this->assertEmpty($logger->output);
     }
 
-    #[Test]
-    public function logMessageToOutput(): void
+    public function testLogMessageToOutput(): void
     {
         $logger = new FakeLogger();
         $logger->info('info message', ['foo' => 'bar']);
@@ -45,8 +42,7 @@ final class FakeLoggerTest extends TestCase
         $this->assertStringContainsString('"foo":"bar"', $logger->output[0]);
     }
 
-    #[Test]
-    public function logMultipleLevels(): void
+    public function testLogMultipleLevels(): void
     {
         $logger = new FakeLogger();
         $logger->debug('debug message');
@@ -56,8 +52,7 @@ final class FakeLoggerTest extends TestCase
         $this->assertStringContainsString('[WARNING]', $logger->output[1]);
     }
 
-    #[Test]
-    public function logStringableObject(): void
+    public function testLogStringableObject(): void
     {
         $message = new class() implements Stringable {
             public function __toString(): string
@@ -72,8 +67,7 @@ final class FakeLoggerTest extends TestCase
         $this->assertStringContainsString('stringable message', $logger->output[0]);
     }
 
-    #[Test]
-    public function logWithEmptyContext(): void
+    public function testLogWithEmptyContext(): void
     {
         $logger = new FakeLogger();
         $logger->alert('alert with no context', []);

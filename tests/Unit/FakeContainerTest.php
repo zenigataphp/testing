@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit\Infrastructure;
+namespace Zenigata\Testing\Test\Unit;
 
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
-use Zenigata\Testing\Infrastructure\FakeContainer;
+use Zenigata\Testing\FakeContainer;
 
 /**
  * Unit test for {@see FakeContainer}.
@@ -26,16 +25,14 @@ use Zenigata\Testing\Infrastructure\FakeContainer;
 #[CoversClass(FakeContainer::class)]
 final class FakeContainerTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $container = new FakeContainer();
 
         $this->assertEmpty($container->entries);
     }
 
-    #[Test]
-    public function returnServiceIfExists(): void
+    public function testReturnServiceIfExists(): void
     {
         $container = new FakeContainer(['foo' => 'bar']);
 
@@ -43,8 +40,7 @@ final class FakeContainerTest extends TestCase
         $this->assertSame('bar', $container->get('foo'));
     }
 
-    #[Test]
-    public function throwIfServiceIsMissing(): void
+    public function testThrowIfServiceIsMissing(): void
     {
         $this->expectException(NotFoundExceptionInterface::class);
         $this->expectExceptionMessage("Service 'missing' not found");
@@ -53,8 +49,7 @@ final class FakeContainerTest extends TestCase
         $container->get('missing');
     }
 
-    #[Test]
-    public function throwIfEntriesIsNotAssociativeArray(): void
+    public function testThrowIfEntriesIsNotAssociativeArray(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("requires an associative array of entries");
@@ -62,8 +57,7 @@ final class FakeContainerTest extends TestCase
         new FakeContainer(['foo', 'bar']);
     }
 
-    #[Test]
-    public function has(): void
+    public function testHas(): void
     {
         $container = new FakeContainer();
 
@@ -75,8 +69,7 @@ final class FakeContainerTest extends TestCase
         $this->assertFalse($container->has('missing'));
     }
 
-    #[Test]
-    public function nullServiceIsValid(): void
+    public function testNullServiceIsValid(): void
     {
         $this->expectException(NotFoundExceptionInterface::class);
 

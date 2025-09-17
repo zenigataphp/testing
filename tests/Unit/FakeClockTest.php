@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit\Infrastructure;
+namespace Zenigata\Testing\Test\Unit;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Zenigata\Testing\Infrastructure\FakeClock;
+use Zenigata\Testing\FakeClock;
 
 /**
  * Unit test for {@see FakeClock}.
@@ -24,8 +23,7 @@ use Zenigata\Testing\Infrastructure\FakeClock;
 #[CoversClass(FakeClock::class)]
 final class FakeClockTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $clock = new FakeClock();
 
@@ -33,8 +31,7 @@ final class FakeClockTest extends TestCase
         $this->assertSame(new DateTimeImmutable()->getTimestamp(), $clock->now()->getTimestamp());
     }
 
-    #[Test]
-    public function acceptDateTimeImmutable(): void
+    public function testAcceptDateTimeImmutable(): void
     {
         $datetime = new DateTimeImmutable('2023-01-01 00:00:00');
 
@@ -43,8 +40,7 @@ final class FakeClockTest extends TestCase
         $this->assertSame($datetime, $clock->now());
     }
 
-    #[Test]
-    public function acceptStringDate(): void
+    public function testAcceptStringDate(): void
     {
         $datetime = '2024-05-05 12:00:00';
 

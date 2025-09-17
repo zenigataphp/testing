@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Infrastructure;
+namespace Zenigata\Testing;
 
 use function array_is_list;
 use function sprintf;
