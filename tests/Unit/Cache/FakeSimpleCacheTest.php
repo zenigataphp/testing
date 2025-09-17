@@ -6,7 +6,6 @@ namespace Zenigata\Testing\Test\Unit\Cache;
 
 use DateInterval;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Cache\FakeSimpleCache;
 
@@ -30,16 +29,14 @@ use Zenigata\Testing\Cache\FakeSimpleCache;
 #[CoversClass(FakeSimpleCache::class)]
 final class FakeSimpleCacheTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $cache = new FakeSimpleCache();
 
         $this->assertEmpty($cache->items);
     }
 
-    #[Test]
-    public function getReturnsValueIfExists(): void
+    public function testGetReturnsValueIfExists(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -48,16 +45,14 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertSame('bar', $cache->get('foo'));
     }
 
-    #[Test]
-    public function getReturnsDefaultIfNotExists(): void
+    public function testGetReturnsDefaultIfNotExists(): void
     {
         $cache = new FakeSimpleCache();
 
         $this->assertSame('default', $cache->get('missing', 'default'));
     }
 
-    #[Test]
-    public function setStoresValue(): void
+    public function testSetStoresValue(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -66,8 +61,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertSame(1, $cache->get('foo'));
     }
 
-    #[Test]
-    public function hasDetectsPresence(): void
+    public function testHasDetectsPresence(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -77,8 +71,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertFalse($cache->has('missing'));
     }
 
-    #[Test]
-    public function deleteRemovesItem(): void
+    public function testDeleteRemovesItem(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -88,8 +81,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertFalse($cache->has('to_delete'));
     }
 
-    #[Test]
-    public function clearRemovesAll(): void
+    public function testClearRemovesAll(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -101,8 +93,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertFalse($cache->has('b'));
     }
 
-    #[Test]
-    public function getMultiple(): void
+    public function testGetMultiple(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -114,8 +105,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertSame(['a' => 1, 'b' => 2, 'c' => 3], $results);
     }
 
-    #[Test]
-    public function setMultiple(): void
+    public function testSetMultiple(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -125,8 +115,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertSame(2, $cache->get('b'));
     }
 
-    #[Test]
-    public function deleteMultiple(): void
+    public function testDeleteMultiple(): void
     {
         $cache = new FakeSimpleCache();
 
@@ -138,8 +127,7 @@ final class FakeSimpleCacheTest extends TestCase
         $this->assertFalse($cache->has('b'));
     }
 
-    #[Test]
-    public function ttlExpiration(): void
+    public function testTtlExpiration(): void
     {
         $cache = new FakeSimpleCache();
         $cache->set('short', 42, new DateInterval('PT0S'));

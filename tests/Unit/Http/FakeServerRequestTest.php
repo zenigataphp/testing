@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Http\FakeServerRequest;
 
@@ -28,8 +27,7 @@ use Zenigata\Testing\Http\FakeServerRequest;
 #[CoversClass(FakeServerRequest::class)]
 final class FakeServerRequestTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $request = new FakeServerRequest();
 
@@ -41,8 +39,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertEmpty($request->getAttributes());
     }
 
-    #[Test]
-    public function getAttribute(): void
+    public function testGetAttribute(): void
     {
         $request = new FakeServerRequest(attributes: ['foo' => 'bar']);
         
@@ -50,8 +47,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertSame('default', $request->getAttribute('missing', 'default'));
     }
 
-    #[Test]
-    public function withAndWihoutAttribute(): void
+    public function testWithAndWihoutAttribute(): void
     {
         $request = new FakeServerRequest();
 
@@ -63,8 +59,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertNull($removed->getAttribute('foo'));
     }
 
-    #[Test]
-    public function withCookieParams(): void
+    public function testWithCookieParams(): void
     {
         $original = new FakeServerRequest();
         $modified = $original->withCookieParams(['cookie' => 1]);
@@ -73,8 +68,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertEmpty($original->getCookieParams());
     }
 
-    #[Test]
-    public function withQueryParams(): void
+    public function testWithQueryParams(): void
     {
         $original = new FakeServerRequest();
         $modified = $original->withQueryParams(['query' => 'foo']);
@@ -82,8 +76,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertSame(['query' => 'foo'], $modified->getQueryParams());
     }
 
-    #[Test]
-    public function withUploadedFiles(): void
+    public function testWithUploadedFiles(): void
     {
         $original = new FakeServerRequest();
         $modified = $original->withUploadedFiles(['file' => 'fake']);
@@ -91,8 +84,7 @@ final class FakeServerRequestTest extends TestCase
         $this->assertSame(['file' => 'fake'], $modified->getUploadedFiles());
     }
 
-    #[Test]
-    public function withParsedBody(): void
+    public function testWithParsedBody(): void
     {
         $original = new FakeServerRequest();
         $modified = $original->withParsedBody(['data' => 1]);

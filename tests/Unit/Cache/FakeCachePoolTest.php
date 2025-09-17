@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Cache;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Cache\FakeCacheItem;
 use Zenigata\Testing\Cache\FakeCachePool;
@@ -29,8 +28,7 @@ use Zenigata\Testing\Cache\FakeCachePool;
 #[CoversClass(FakeCachePool::class)]
 final class FakeCachePoolTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $cache = new FakeCachePool();
 
@@ -38,8 +36,7 @@ final class FakeCachePoolTest extends TestCase
         $this->assertEmpty($cache->deferred);
     }
 
-    #[Test]
-    public function getItemCreatesIfMissing(): void
+    public function testGetItemCreatesIfMissing(): void
     {
         $cache = new FakeCachePool();
 
@@ -49,8 +46,7 @@ final class FakeCachePoolTest extends TestCase
         $this->assertSame('foo', $item->getKey());
     }
 
-    #[Test]
-    public function saveStoresItem(): void
+    public function testSaveStoresItem(): void
     {
         $cache = new FakeCachePool();
         $item = new FakeCacheItem('foo', 'bar', true);
@@ -60,71 +56,7 @@ final class FakeCachePoolTest extends TestCase
         $this->assertSame($item, $cache->getItem('foo'));
     }
 
-    #[Test]
-    public function hasItem(): void
-    {
-        $cache = new FakeCachePool();
-
-        $cache->save(new FakeCacheItem('a'));
-        
-        $this->assertTrue($cache->hasItem('a'));
-        $this->assertFalse($cache->hasItem('b'));
-    }
-
-    #[Test]
-    public function clearRemovesAll(): void
-    {
-        $cache = new FakeCachePool();
-
-        $cache->save(new FakeCacheItem('a'));
-        $cache->save(new FakeCacheItem('b'));
-        $cache->clear();
-
-        $this->assertFalse($cache->hasItem('a'));
-        $this->assertFalse($cache->hasItem('b'));
-    }
-
-    #[Test]
-    public function deleteItem(): void
-    {
-        $cache = new FakeCachePool();
-
-        $cache->save(new FakeCacheItem('foo'));
-        $cache->deleteItem('foo');
-
-        $this->assertFalse($cache->hasItem('foo'));
-    }
-
-    #[Test]
-    public function deleteItems(): void
-    {
-        $cache = new FakeCachePool();
-
-        $cache->save(new FakeCacheItem('a'));
-        $cache->save(new FakeCacheItem('b'));
-        $cache->deleteItems(['a', 'b']);
-
-        $this->assertFalse($cache->hasItem('a'));
-        $this->assertFalse($cache->hasItem('b'));
-    }
-
-    #[Test]
-    public function getItems(): void
-    {
-        $cache = new FakeCachePool();
-
-        $cache->save(new FakeCacheItem('a'));
-        $cache->save(new FakeCacheItem('b'));
-
-        $items = $cache->getItems(['a', 'b', 'c']);
-
-        $this->assertArrayHasKey('a', $items);
-        $this->assertArrayHasKey('b', $items);
-        $this->assertArrayHasKey('c', $items);
-    }
-
-    #[Test]
-    public function saveDeferredAndCommit(): void
+    public function testSaveDeferredAndCommit(): void
     {
         $cache = new FakeCachePool();
         $item = new FakeCacheItem('deferred', 42);
@@ -138,5 +70,63 @@ final class FakeCachePoolTest extends TestCase
 
         $this->assertEmpty($cache->deferred);
         $this->assertTrue($cache->hasItem('deferred'));
+    }
+
+    public function testHasItem(): void
+    {
+        $cache = new FakeCachePool();
+
+        $cache->save(new FakeCacheItem('a'));
+        
+        $this->assertTrue($cache->hasItem('a'));
+        $this->assertFalse($cache->hasItem('b'));
+    }
+
+    public function testGetItems(): void
+    {
+        $cache = new FakeCachePool();
+
+        $cache->save(new FakeCacheItem('a'));
+        $cache->save(new FakeCacheItem('b'));
+
+        $items = $cache->getItems(['a', 'b', 'c']);
+
+        $this->assertArrayHasKey('a', $items);
+        $this->assertArrayHasKey('b', $items);
+        $this->assertArrayHasKey('c', $items);
+    }
+
+    public function testClearRemovesAll(): void
+    {
+        $cache = new FakeCachePool();
+
+        $cache->save(new FakeCacheItem('a'));
+        $cache->save(new FakeCacheItem('b'));
+        $cache->clear();
+
+        $this->assertFalse($cache->hasItem('a'));
+        $this->assertFalse($cache->hasItem('b'));
+    }
+
+    public function testDeleteItem(): void
+    {
+        $cache = new FakeCachePool();
+
+        $cache->save(new FakeCacheItem('foo'));
+        $cache->deleteItem('foo');
+
+        $this->assertFalse($cache->hasItem('foo'));
+    }
+
+    public function testDeleteItems(): void
+    {
+        $cache = new FakeCachePool();
+
+        $cache->save(new FakeCacheItem('a'));
+        $cache->save(new FakeCacheItem('b'));
+        $cache->deleteItems(['a', 'b']);
+
+        $this->assertFalse($cache->hasItem('a'));
+        $this->assertFalse($cache->hasItem('b'));
     }
 }

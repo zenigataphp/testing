@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,16 +28,14 @@ use Zenigata\Testing\Http\FakeServerRequest;
 #[CoversClass(FakeRequestHandler::class)]
 final class FakeRequestHandlerTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $handler = new FakeRequestHandler();
 
         $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
-    #[Test]
-    public function returnResponse(): void
+    public function testReturnResponse(): void
     {
         $handler = new FakeRequestHandler();
 
@@ -48,8 +45,7 @@ final class FakeRequestHandlerTest extends TestCase
         $this->assertInstanceOf(FakeResponse::class, $response);
     }
 
-    #[Test]
-    public function returnCustomResponseIfProvided(): void
+    public function testReturnCustomResponseIfProvided(): void
     {
         $initialResponse = new FakeResponse();
         $handler = new FakeRequestHandler($initialResponse);
@@ -59,8 +55,7 @@ final class FakeRequestHandlerTest extends TestCase
         $this->assertSame($initialResponse, $response);
     }
 
-    #[Test]
-    public function hooksCorrectExecution(): void
+    public function testHooksCorrectExecution(): void
     {
         $handler = new class extends FakeRequestHandler {
             public ?ServerRequestInterface $request = null;

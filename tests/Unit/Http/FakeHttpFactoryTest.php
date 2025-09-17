@@ -11,7 +11,6 @@ use function fopen;
 use RuntimeException;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -65,8 +64,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->factory = new FakeHttpFactory();
     }
 
-    #[Test]
-    public function createRequestReturnsFakeRequest(): void
+    public function testCreateRequestReturnsFakeRequest(): void
     {
         $request = $this->factory->createRequest('GET', 'http://example.com');
 
@@ -75,8 +73,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('GET', $request->getMethod());
     }
 
-    #[Test]
-    public function createResponseReturnsFakeResponse(): void
+    public function testCreateResponseReturnsFakeResponse(): void
     {
         $response = $this->factory->createResponse(201, 'Created');
 
@@ -85,8 +82,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame(201, $response->getStatusCode());
     }
 
-    #[Test]
-    public function createServerRequestReturnsFakeServerRequest(): void
+    public function testCreateServerRequestReturnsFakeServerRequest(): void
     {
         $request = $this->factory->createServerRequest('POST', 'http://localhost', ['foo' => 'bar']);
 
@@ -95,8 +91,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('POST', $request->getMethod());
     }
 
-    #[Test]
-    public function createStreamReturnsFakeStream(): void
+    public function testCreateStreamReturnsFakeStream(): void
     {
         $stream = $this->factory->createStream('string content');
 
@@ -105,8 +100,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('string content', (string) $stream);
     }
 
-    #[Test]
-    public function createStreamFromResourceReturnsFakeStream(): void
+    public function testCreateStreamFromResourceReturnsFakeStream(): void
     {
         $root = vfsStream::setup('root');
         $file = vfsStream::newFile('test.txt')->at($root)->setContent('virtual content');
@@ -118,8 +112,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('virtual content', (string) $stream);
     }
 
-    #[Test]
-    public function createStreamFromResource(): void
+    public function testCreateStreamFromResource(): void
     {
         $root = vfsStream::setup('root');
         $file = vfsStream::newFile('resource.txt')->at($root)->setContent('resource content');
@@ -131,24 +124,21 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('resource content', (string) $stream);
     }
 
-    #[Test]
-    public function createStreamFromFileThrowsIfFileUnreadable(): void
+    public function testCreateStreamFromFileThrowsIfFileUnreadable(): void
     {
         $this->expectException(RuntimeException::class);
 
         $this->factory->createStreamFromFile('/non/existent/file.txt');
     }
 
-    #[Test]
-    public function createStreamFromResourceThrowsOnInvalidResource(): void
+    public function testCreateStreamFromResourceThrowsOnInvalidResource(): void
     {
         $this->expectException(RuntimeException::class);
 
         $this->factory->createStreamFromResource('not-a-resource');
     }
 
-    #[Test]
-    public function createStreamWithFileUri(): void
+    public function testCreateStreamWithFileUri(): void
     {
         $root = vfsStream::setup('root');
         $file = vfsStream::newFile('file.txt')->at($root)->setContent('uri content');
@@ -159,8 +149,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('uri content', (string) $stream);
     }
 
-    #[Test]
-    public function createUploadedFileReturnsFakeUploadedFile(): void
+    public function testCreateUploadedFileReturnsFakeUploadedFile(): void
     {
         $file = $this->factory->createUploadedFile(
             stream: new FakeStream('foo'),
@@ -177,8 +166,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('text/plain', $file->getClientMediaType());
     }
 
-    #[Test]
-    public function createUriReturnsFakeUriFromString(): void
+    public function testCreateUriReturnsFakeUriFromString(): void
     {
         $uri = $this->factory->createUri('https://user:pass@acme.com:8080/test?foo=bar#frag');
 
@@ -193,8 +181,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertSame('frag', $uri->getFragment());
     }
 
-    #[Test]
-    public function createUriWithEmptyStringReturnsUriWithDefaults(): void
+    public function testCreateUriWithEmptyStringReturnsUriWithDefaults(): void
     {
         $uri = $this->factory->createUri('');
 

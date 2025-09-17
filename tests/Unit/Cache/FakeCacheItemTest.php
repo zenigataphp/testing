@@ -7,7 +7,6 @@ namespace Zenigata\Testing\Test\Unit\Cache;
 use DateInterval;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Cache\FakeCacheItem;
 
@@ -28,56 +27,49 @@ use Zenigata\Testing\Cache\FakeCacheItem;
 #[CoversClass(FakeCacheItem::class)]
 final class FakeCacheItemTest extends TestCase
 {
-    #[Test]
-    public function getKeyReturnsGivenKey(): void
+    public function testGetKeyReturnsGivenKey(): void
     {
         $item = new FakeCacheItem('foo');
 
         $this->assertSame('foo', $item->getKey());
     }
 
-    #[Test]
-    public function getReturnsGivenValue(): void
+    public function testGetReturnsGivenValue(): void
     {
         $item = new FakeCacheItem('foo', 'bar');
 
         $this->assertSame('bar', $item->get());
     }
 
-    #[Test]
-    public function isHitReturnsFalseIfFlagIsFalse(): void
+    public function testIsHitReturnsFalseIfFlagIsFalse(): void
     {
         $item = new FakeCacheItem('foo', 'bar', false);
 
         $this->assertFalse($item->isHit());
     }
 
-    #[Test]
-    public function isHitReturnsTrueIfFlagIsTrueAndNoExpiration(): void
+    public function testIsHitReturnsTrueIfFlagIsTrueAndNoExpiration(): void
     {
         $item = new FakeCacheItem('foo', 'bar', true);
 
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function isHitReturnsFalseIfExpired(): void
+    public function testIsHitReturnsFalseIfExpired(): void
     {
         $item = new FakeCacheItem('foo', 'bar', true, new DateTimeImmutable('-1 second'));
 
         $this->assertFalse($item->isHit());
     }
 
-    #[Test]
-    public function isHitReturnsTrueIfNotExpired(): void
+    public function testIsHitReturnsTrueIfNotExpired(): void
     {
         $item = new FakeCacheItem('foo', 'bar', true, new DateTimeImmutable('+1 hour'));
 
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function setUpdatesValueAndSetsHit(): void
+    public function testSetUpdatesValueAndSetsHit(): void
     {
         $item = new FakeCacheItem('foo');
 
@@ -87,8 +79,7 @@ final class FakeCacheItemTest extends TestCase
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function expiresAtSetsExpiration(): void
+    public function testExpiresAtSetsExpiration(): void
     {
         $expiration = new DateTimeImmutable('+10 minutes');
         $item = new FakeCacheItem('foo');
@@ -99,8 +90,7 @@ final class FakeCacheItemTest extends TestCase
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function expiresAfterWithNullDisablesExpiration(): void
+    public function testExpiresAfterWithNullDisablesExpiration(): void
     {
         $item = new FakeCacheItem('foo', 'bar', true, new DateTimeImmutable('-1 hour'));
 
@@ -109,8 +99,7 @@ final class FakeCacheItemTest extends TestCase
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function expiresAfterWithSeconds(): void
+    public function testExpiresAfterWithSeconds(): void
     {
         $item = new FakeCacheItem('foo');
 
@@ -119,8 +108,7 @@ final class FakeCacheItemTest extends TestCase
         $this->assertTrue($item->isHit());
     }
 
-    #[Test]
-    public function expiresAfterWithDateInterval(): void
+    public function testExpiresAfterWithDateInterval(): void
     {
         $interval = new DateInterval('PT1H');
         $item = new FakeCacheItem('foo');

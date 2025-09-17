@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,16 +31,14 @@ use Zenigata\Testing\Http\FakeServerRequest;
 #[CoversClass(FakeMiddleware::class)]
 final class FakeMiddlewareTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $middleware = new FakeMiddleware();
 
         $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
     }
 
-    #[Test]
-    public function passRequestToNextHandler(): void
+    public function testPassRequestToNextHandler(): void
     {
         $handler = new class extends FakeRequestHandler {
             public ?ServerRequestInterface $request = null;
@@ -60,8 +57,7 @@ final class FakeMiddlewareTest extends TestCase
         $this->assertSame($request, $handler->request);
     }
 
-    #[Test]
-    public function returnResponseInterface(): void
+    public function testReturnResponseInterface(): void
     {
         $middleware = new FakeMiddleware();
 
@@ -70,8 +66,7 @@ final class FakeMiddlewareTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    #[Test]
-    public function delegateToHandler(): void
+    public function testDelegateToHandler(): void
     {
         $expectedResponse = new FakeResponse();
         $middleware = new FakeMiddleware();
@@ -84,8 +79,7 @@ final class FakeMiddlewareTest extends TestCase
         $this->assertSame($expectedResponse, $response);
     }
 
-    #[Test]
-    public function hooksCorrectExecution(): void
+    public function testHooksCorrectExecution(): void
     {
         $middleware = new class extends FakeMiddleware {
             public ?RequestHandlerInterface $handler = null;

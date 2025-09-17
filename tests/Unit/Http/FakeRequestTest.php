@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Http\FakeRequest;
 use Zenigata\Testing\Http\FakeUri;
@@ -26,8 +25,7 @@ use Zenigata\Testing\Http\FakeUri;
 #[CoversClass(FakeRequest::class)]
 final class FakeRequestTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $request = new FakeRequest();
 
@@ -36,8 +34,7 @@ final class FakeRequestTest extends TestCase
         $this->assertInstanceOf(FakeUri::class, $request->getUri());
     }
 
-    #[Test]
-    public function withMethodIsImmutable(): void
+    public function testWithMethodIsImmutable(): void
     {
         $original = new FakeRequest(method: 'GET');
         $modified = $original->withMethod('PUT');
@@ -47,8 +44,7 @@ final class FakeRequestTest extends TestCase
         $this->assertSame('PUT', $modified->getMethod());
     }
 
-    #[Test]
-    public function withRequestTarget(): void
+    public function testWithRequestTarget(): void
     {
         $original = new FakeRequest(requestTarget: '/original');
         $modified = $original->withRequestTarget('/modified');
@@ -57,8 +53,7 @@ final class FakeRequestTest extends TestCase
         $this->assertSame('/modified', $modified->getRequestTarget());
     }
 
-    #[Test]
-    public function withUriSetsHostHeaderByDefault(): void
+    public function testWithUriSetsHostHeaderByDefault(): void
     {
         $uri = new FakeUri(host: 'example.com');
 
@@ -68,8 +63,7 @@ final class FakeRequestTest extends TestCase
         $this->assertSame(['example.com'], $modified->getHeader('Host'));
     }
 
-    #[Test]
-    public function withUriPreservesHostIfFlagIsTrue(): void
+    public function testWithUriPreservesHostIfFlagIsTrue(): void
     {
         $uri = new FakeUri(host: 'example.com');
 

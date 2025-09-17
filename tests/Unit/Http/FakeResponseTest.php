@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Http\FakeResponse;
 use Zenigata\Testing\Http\FakeStream;
@@ -26,8 +25,7 @@ use Zenigata\Testing\Http\FakeStream;
 #[CoversClass(FakeResponse::class)]
 final class FakeResponseTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $response = new FakeResponse();
 
@@ -35,8 +33,7 @@ final class FakeResponseTest extends TestCase
         $this->assertSame('OK', $response->getReasonPhrase());
     }
 
-    #[Test]
-    public function withStatus(): void
+    public function testWithStatus(): void
     {
         $original = new FakeResponse();
         $modified = $original->withStatus(404, 'Not Found');
@@ -46,8 +43,7 @@ final class FakeResponseTest extends TestCase
         $this->assertSame(404, $modified->getStatusCode());
     }
 
-    #[Test]
-    public function withStatusOverridesReasonPhrase(): void
+    public function testWithStatusOverridesReasonPhrase(): void
     {
         $response = new FakeResponse();
         $response = $response->withStatus(404, 'Not Found');
@@ -55,8 +51,7 @@ final class FakeResponseTest extends TestCase
         $this->assertSame('Not Found', $response->getReasonPhrase());
     }
 
-    #[Test]
-    public function withStatusAcceptsEmptyReasonPhrase(): void
+    public function testWithStatusAcceptsEmptyReasonPhrase(): void
     {
         $response = new FakeResponse(403, 'Forbidden');
         $response = $response->withStatus(403, '');
@@ -64,8 +59,7 @@ final class FakeResponseTest extends TestCase
         $this->assertSame('', $response->getReasonPhrase());
     }
 
-    #[Test]
-    public function withStatusPreservesHeadersBodyAndProtocol(): void
+    public function testWithStatusPreservesHeadersBodyAndProtocol(): void
     {
         $headers = ['X-Custom-Header' => ['1']];
         $body = new FakeStream('foo');

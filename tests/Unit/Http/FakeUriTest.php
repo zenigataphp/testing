@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Zenigata\Testing\Http\FakeUri;
@@ -27,8 +26,7 @@ use Zenigata\Testing\Http\FakeUri;
 #[CoversClass(FakeUri::class)]
 final class FakeUriTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $uri = new FakeUri();
 
@@ -43,8 +41,7 @@ final class FakeUriTest extends TestCase
         $this->assertSame('http://localhost/', (string) $uri);
     }
 
-    #[Test]
-    public function gettersReturnConstructorValues(): void
+    public function testGettersReturnConstructorValues(): void
     {
         $uri = new FakeUri(
             scheme: 'https',
@@ -65,8 +62,7 @@ final class FakeUriTest extends TestCase
         $this->assertSame('section1', $uri->getFragment());
     }
 
-    #[Test]
-    public function getAuthorityWithUserInfoAndPort(): void
+    public function testGetAuthorityWithUserInfoAndPort(): void
     {
         $uri = new FakeUri(
             host: 'example.com',
@@ -77,8 +73,7 @@ final class FakeUriTest extends TestCase
         $this->assertSame('user:pass@example.com:8080', $uri->getAuthority());
     }
 
-    #[Test]
-    public function toStringBuildsFullUri(): void
+    public function testToStringBuildsFullUri(): void
     {
         $uri = new FakeUri(
             scheme: 'https',
@@ -93,8 +88,7 @@ final class FakeUriTest extends TestCase
         $this->assertSame('https://user:pass@example.com:443/test?foo=1#end', (string) $uri);
     }
 
-    #[Test]
-    public function withMethodsReturnModifiedClones(): void
+    public function testWithMethodsReturnModifiedClones(): void
     {
         $original = new FakeUri();
 
@@ -118,8 +112,7 @@ final class FakeUriTest extends TestCase
         $this->assertSame('download', $modified->getFragment());
     }
 
-    #[Test]
-    public function withUserInfoHandlesNullPassword(): void
+    public function testWithUserInfoHandlesNullPassword(): void
     {
         $uri = new FakeUri()->withUserInfo('user');
 

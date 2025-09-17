@@ -7,7 +7,6 @@ namespace Zenigata\Testing\Test\Unit\Http;
 use const UPLOAD_ERR_OK;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 use Zenigata\Testing\Http\FakeStream;
@@ -31,8 +30,7 @@ use Zenigata\Testing\Http\FakeUploadedFile;
 #[CoversClass(FakeUploadedFile::class)]
 final class FakeUploadedFileTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $file = new FakeUploadedFile();
 
@@ -44,8 +42,7 @@ final class FakeUploadedFileTest extends TestCase
         $this->assertNull($file->getClientMediaType());
     }
 
-    #[Test]
-    public function getStreamReturnsInjectedStream(): void
+    public function testGetStreamReturnsInjectedStream(): void
     {
         $stream = new FakeStream('foo');
         $file = new FakeUploadedFile(stream: $stream);
@@ -53,40 +50,35 @@ final class FakeUploadedFileTest extends TestCase
         $this->assertSame($stream, $file->getStream());
     }
 
-    #[Test]
-    public function getSizeReturnsExplicitSizeIfSet(): void
+    public function testGetSizeReturnsExplicitSizeIfSet(): void
     {
         $file = new FakeUploadedFile(size: 42);
 
         $this->assertSame(42, $file->getSize());
     }
 
-    #[Test]
-    public function getSizeFallsBackToStreamSize(): void
+    public function testGetSizeFallsBackToStreamSize(): void
     {
         $file = new FakeUploadedFile(stream: new FakeStream('abcde'));
 
         $this->assertSame(5, $file->getSize());
     }
 
-    #[Test]
-    public function sizeDefaultsToZeroIfNotExplicit(): void
-    {
-        $file = new FakeUploadedFile(stream: new FakeStream());
-
-        $this->assertSame(0, $file->getSize());
-    }
-
-    #[Test]
-    public function getErrorReturnsProvidedErrorCode(): void
+    public function testGetErrorReturnsProvidedErrorCode(): void
     {
         $file = new FakeUploadedFile(error: UPLOAD_ERR_OK);
 
         $this->assertSame(UPLOAD_ERR_OK, $file->getError());
     }
 
-    #[Test]
-    public function clientFilenameAndMediaTypeAreReturned(): void
+    public function testSizeDefaultsToZeroIfNotExplicit(): void
+    {
+        $file = new FakeUploadedFile(stream: new FakeStream());
+
+        $this->assertSame(0, $file->getSize());
+    }
+
+    public function testClientFilenameAndMediaTypeAreReturned(): void
     {
         $file = new FakeUploadedFile(
             clientFilename: 'avatar.png',
@@ -97,8 +89,7 @@ final class FakeUploadedFileTest extends TestCase
         $this->assertSame('image/png', $file->getClientMediaType());
     }
 
-    #[Test]
-    public function clientFilenameAndMediaTypeCanBeNull(): void
+    public function testClientFilenameAndMediaTypeCanBeNull(): void
     {
         $file = new FakeUploadedFile();
 
@@ -106,8 +97,7 @@ final class FakeUploadedFileTest extends TestCase
         $this->assertNull($file->getClientMediaType());
     }
 
-    #[Test]
-    public function moveToDoesNothing(): void
+    public function testMoveToDoesNothing(): void
     {
         $this->expectNotToPerformAssertions();
         

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Cache;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zenigata\Testing\Cache\FakeCacheItem;
 use Zenigata\Testing\Cache\FakeCacheItemPool;
@@ -30,8 +29,7 @@ use Zenigata\Testing\Cache\FakeCacheItemPool;
 #[CoversClass(FakeCacheItemPool::class)]
 final class FakeCacheItemPoolTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $cache = new FakeCacheItemPool();
 
@@ -39,8 +37,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertEmpty($cache->deferred);
     }
 
-    #[Test]
-    public function getItemReturnsExistingItem(): void
+    public function testGetItemReturnsExistingItem(): void
     {
         $pool = new FakeCacheItemPool();
         $item = new FakeCacheItem('foo', 'bar', true);
@@ -51,8 +48,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertSame($item, $pool->items['foo']);
     }
 
-    #[Test]
-    public function getItemReturnsNewItemIfMissing(): void
+    public function testGetItemReturnsNewItemIfMissing(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -62,8 +58,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertSame('missing', $item->getKey());
     }
 
-    #[Test]
-    public function getItemsReturnsIterable(): void
+    public function testGetItemsReturnsIterable(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -74,8 +69,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertArrayHasKey('b', $items);
     }
 
-    #[Test]
-    public function hasItemReflectsHitStatus(): void
+    public function testHasItemReflectsHitStatus(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -85,8 +79,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertFalse($pool->hasItem('missing'));
     }
 
-    #[Test]
-    public function clearRemovesAllItems(): void
+    public function testClearRemovesAllItems(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -96,8 +89,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertEmpty($pool->items);
     }
 
-    #[Test]
-    public function deleteItemRemovesOneItem(): void
+    public function testDeleteItemRemovesOneItem(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -107,8 +99,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertArrayNotHasKey('foo', $pool->items);
     }
 
-    #[Test]
-    public function deleteItemsRemovesManyItems(): void
+    public function testDeleteItemsRemovesManyItems(): void
     {
         $pool = new FakeCacheItemPool();
 
@@ -119,8 +110,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertEmpty($pool->items);
     }
 
-    #[Test]
-    public function saveDeferredStoresInDeferred(): void
+    public function testSaveDeferredStoresInDeferred(): void
     {
         $pool = new FakeCacheItemPool();
         $item = new FakeCacheItem('foo', 'bar');
@@ -130,8 +120,7 @@ final class FakeCacheItemPoolTest extends TestCase
         $this->assertSame($item, $pool->deferred['foo']);
     }
 
-    #[Test]
-    public function commitMovesDeferredToItems(): void
+    public function testCommitMovesDeferredToItems(): void
     {
         $pool = new FakeCacheItemPool();
         $item = new FakeCacheItem('foo', 'bar');

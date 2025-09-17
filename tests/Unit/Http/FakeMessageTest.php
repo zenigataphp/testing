@@ -6,7 +6,6 @@ namespace Zenigata\Testing\Test\Unit\Http;
 
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeMessage;
@@ -28,8 +27,7 @@ use Zenigata\Testing\Http\FakeStream;
 #[CoversClass(FakeMessage::class)]
 final class FakeMessageTest extends TestCase
 {
-    #[Test]
-    public function defaults(): void
+    public function testDefaults(): void
     {
         $message = new FakeMessage();
 
@@ -39,8 +37,7 @@ final class FakeMessageTest extends TestCase
         $this->assertSame('1.1', $message->getProtocolVersion());
     }
 
-    #[Test]
-    public function headerAccess(): void
+    public function testHeaderAccess(): void
     {
         $message = new FakeMessage(headers: ['X-Custom-Header' => ['hello']]);
 
@@ -49,8 +46,7 @@ final class FakeMessageTest extends TestCase
         $this->assertSame('hello', $message->getHeaderLine('X-Custom-Header'));
     }
 
-    #[Test]
-    public function headerManipulation(): void
+    public function testHeaderManipulation(): void
     {
         $message = new FakeMessage(headers: ['X-Custom-Header' => ['abc']]);
 
@@ -63,8 +59,7 @@ final class FakeMessageTest extends TestCase
         $this->assertFalse($removed->hasHeader('X-Custom-Header'));
     }
 
-    #[Test]
-    public function withBody(): void
+    public function testWithBody(): void
     {
         $stream = new FakeStream();
 
@@ -75,8 +70,7 @@ final class FakeMessageTest extends TestCase
         $this->assertSame($stream, $modified->getBody());
     }
 
-    #[Test]
-    public function withProtocolVersion(): void
+    public function testWithProtocolVersion(): void
     {
         $original = new FakeMessage();
         $modified = $original->withProtocolVersion('2');
@@ -86,8 +80,7 @@ final class FakeMessageTest extends TestCase
         $this->assertSame('2', $modified->getProtocolVersion());
     }
 
-    #[Test]
-    public function throwIfHeaderValueIsNotArray(): void
+    public function testThrowIfHeaderValueIsNotArray(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Header 'X-Custom-Header' must be an array of strings");
@@ -95,8 +88,7 @@ final class FakeMessageTest extends TestCase
         new FakeMessage(headers: ['X-Custom-Header' => 'not-an-array']);
     }
 
-    #[Test]
-    public function throwIfHeaderValueContainsNonString(): void
+    public function testThrowIfHeaderValueContainsNonString(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Header 'X-Custom-Header' expects strings, but index 0 has type integer");
