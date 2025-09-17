@@ -8,9 +8,20 @@ use const SEEK_CUR;
 use const SEEK_END;
 use const SEEK_SET;
 
+use function fclose;
+use function fread;
+use function fseek;
+use function fstat;
+use function ftell;
+use function fwrite;
+use function is_resource;
+use function is_string;
+use function rewind;
+use function stream_get_contents;
 use function strlen;
 use function substr;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
 
@@ -18,8 +29,16 @@ use Psr\Http\Message\StreamInterface;
  * Fake implementation of {@see StreamInterface} (PSR-7).
  *
  * This fake stream represents a PSR-7 stream for testing purposes.
- * It simulates reading from and writing to an in-memory string buffer, tracking read operations
- * for inspection, and acting as a test double without involving actual stream resources.
+ * 
+ * It simulates reading from and writing to an in-memory string buffer or a PHP stream resource,
+ * tracking read operations for inspection, and acting as a test double
+ * without relying on real I/O side effects.
+ *
+ * ⚠️ Limitations with resources:
+ * 
+ * - Only basic read/write/seek operations are delegated to PHP's stream functions.
+ * - Metadata (`uri`, `mode`, etc.) is not fully exposed.
+ * - Writes are not synchronized with other consumers of the same resource.
  */
 class FakeStream implements StreamInterface
 {
@@ -40,19 +59,25 @@ class FakeStream implements StreamInterface
     /**
      * Creates a new fake stream instance.
      *
-     * @param string $contents Initial stream content (default: "").
-     * @param bool   $seekable Whether the stream supports seeking (default: true).
-     * @param bool   $readable Whether the stream supports reading (default: true).
-     * @param bool   $writable Whether the stream supports writing (default: true).
-     * @param int    $pointer  Initial read/write position (default: 0).
+     * @param mixed $contents Initial stream content (default: "").
+     * @param bool  $seekable Whether the stream supports seeking (default: true).
+     * @param bool  $readable Whether the stream supports reading (default: true).
+     * @param bool  $writable Whether the stream supports writing (default: true).
+     * @param int   $pointer  Initial read/write position (default: 0).
+     * 
+     * @throws InvalidArgumentException If contents is neither a string nor a resource.
      */
     public function __construct(
-        private string $contents = '',
+        private mixed $contents = '',
         private bool $seekable = true,
         private bool $readable = true,
         private bool $writable = true,
-        private int $pointer = 0
-    ) {}
+        private int $pointer  = 0
+    ) {
+        if (!is_string($contents) && !is_resource($contents)) {
+            throw new InvalidArgumentException('Contents must be string or resource');
+        }
+    }
 
     /**
      * Returns the entire stream contents as a string.
@@ -61,7 +86,9 @@ class FakeStream implements StreamInterface
      */
     public function __toString(): string
     {
-        return $this->contents;
+        return is_resource($this->contents)
+            ? $this->stringifyResource()
+            : $this->contents;
     }
 
     /**
@@ -71,7 +98,9 @@ class FakeStream implements StreamInterface
      */
     public function getContents(): string
     {
-        return substr($this->contents, $this->pointer);
+        return is_resource($this->contents)
+            ? stream_get_contents($this->contents)
+            : substr($this->contents, $this->pointer);
     }
 
     /**
@@ -81,7 +110,9 @@ class FakeStream implements StreamInterface
      */
     public function getSize(): ?int
     {
-        return strlen($this->contents);
+        return is_resource($this->contents)
+            ? $this->detectResourceSize()
+            : strlen($this->contents);
     }
 
     /**
@@ -91,16 +122,30 @@ class FakeStream implements StreamInterface
      */
     public function tell(): int
     {
-        return $this->pointer;
+        return is_resource($this->contents)
+            ? ftell($this->contents)
+            : $this->pointer;
     }
 
     /**
      * Checks if the stream pointer is at the end of the contents.
+     * 
+     * For string-based streams, compares the internal pointer with the string length.
+     * For resource streams, uses {@see ftell()} and {@see fstat()} to detect EOF
+     * because {@see feof()} only returns true *after* a failed read, not when the
+     * pointer is simply positioned at the end.
      *
-     * @return bool True if at end of stream, false otherwise.
+     * @return bool True if the stream is at EOF, false otherwise.
      */
     public function eof(): bool
     {
+        if (is_resource($this->contents)) {
+            $pos = ftell($this->contents);
+            $stats = fstat($this->contents);
+
+            return $pos === false || $stats === false || $pos >= ($stats['size'] ?? 0);
+        }
+
         return $this->pointer >= strlen($this->contents);
     }
 
@@ -136,8 +181,9 @@ class FakeStream implements StreamInterface
      */
     public function read($length): string
     {
-        $chunk = substr($this->contents, $this->pointer, $length);
-        $this->pointer += strlen($chunk);
+        $chunk = is_resource($this->contents)
+            ? $this->readFromResource($length)
+            : $this->readFromString($length);
 
         $this->readCount++;
         $this->readHistory[] = $chunk;
@@ -146,32 +192,38 @@ class FakeStream implements StreamInterface
     }
 
     /**
-     * Closes the stream.
+     * Closes the stream and releases its underlying resource, if any.
      *
-     * No-op in this fake implementation.
-     * 
+     * After calling this method the stream becomes unusable: internal buffer or resource is cleared,
+     * pointer is reset, readable, writable, and seekable capabilities are disabled.
+     *
      * @return void
      */
     public function close(): void
     {
-        return;
-    }
-    
-    /**
-     * Detaches the underlying resource.
-     *
-     * In this fake stream, clears the buffer and disables capabilities.
-     *
-     * @return null Always returns null, since no real resource is used.
-     */
-    public function detach()
-    {
+        if (is_resource($this->contents)) {
+            fclose($this->contents);
+        }
+
         $this->contents = '';
         $this->pointer = 0;
         $this->readable = false;
         $this->seekable = false;
         $this->writable = false;
-
+    }
+    
+    /**
+     * Detaches the underlying resource.
+     *
+     * In this fake stream, detaching behaves the same as {@see close()}: 
+     * any resource is released, the internal state is cleared, and the stream becomes unusable.
+     *
+     * @return null Always null, since no usable resource remains attached.
+     */
+    public function detach()
+    {
+        $this->close();
+        
         return null;
     }
     
@@ -189,11 +241,9 @@ class FakeStream implements StreamInterface
             throw new RuntimeException("Stream is not writable.");
         }
 
-        $this->contents .= $string;
-        $written = strlen($string);
-        $this->pointer += $written;
-        
-        return $written;
+        return is_resource($this->contents)
+            ? $this->writeToResource($string)
+            : $this->writeToString($string);
     }
 
     /**
@@ -231,13 +281,21 @@ class FakeStream implements StreamInterface
             throw new RuntimeException("Stream is not seekable.");
         }
 
+        if (is_resource($this->contents)) {
+            if (fseek($this->contents, $offset, $whence) !== 0) {
+                throw new RuntimeException("Failed to seek resource stream.");
+            }
+
+            return;
+        }
+
         $length = strlen($this->contents);
 
         $pointer = match ($whence) {
             SEEK_SET => $offset,
             SEEK_CUR => $this->pointer + $offset,
             SEEK_END => $length + $offset,
-            default => throw new RuntimeException("Invalid whence argument.")
+            default  => throw new RuntimeException("Invalid whence argument.")
         };
 
         if ($pointer < 0 || $pointer > $length) {
@@ -260,12 +318,101 @@ class FakeStream implements StreamInterface
             'readable' => $this->readable,
             'seekable' => $this->seekable,
             'writable' => $this->writable,
-            'uri' => null,
-            'mode' => null,
+            'uri'      => null,
+            'mode'     => null,
         ];
 
         return $key !== null
             ? $meta[$key] ?? null
             : $meta;
+    }
+
+    /**
+     * Converts a resource stream to a string without altering its position.
+     *
+     * The resource is rewound, read completely, and then the original position
+     * is restored.
+     *
+     * @return string The full resource contents, or an empty string if nothing can be read.
+     */
+    private function stringifyResource(): string
+    {
+        $pos = ftell($this->contents);
+        rewind($this->contents);
+        $data = stream_get_contents($this->contents);
+        fseek($this->contents, $pos);
+
+        return $data ?: '';
+    }
+
+    /**
+     * Determines the size of the underlying resource, if available.
+     *
+     * @return int|null The size in bytes, or null if it cannot be detected.
+     */
+    private function detectResourceSize(): ?int
+    {
+        $stats = fstat($this->contents);
+
+        return $stats !== false 
+            ? $stats['size'] ?? null
+            : null;
+    }
+
+    /**
+     * Reads from a resource stream.
+     *
+     * @param int $length Maximum number of bytes to read.
+     *
+     * @return string Data read from the resource, or an empty string on failure/EOF.
+     */
+    private function readFromResource(int $length): string
+    {
+        return fread($this->contents, $length) ?: '';
+    }
+
+    /**
+     * Reads from an internal string buffer and advances the pointer.
+     *
+     * @param int $length Maximum number of bytes to read.
+     *
+     * @return string The chunk read from the buffer.
+     */
+    private function readFromString(int $length): string
+    {
+        $chunk = substr($this->contents, $this->pointer, $length);
+        $this->pointer += strlen($chunk);
+
+        return $chunk;
+    }
+
+    /**
+     * Writes data to a resource stream.
+     *
+     * @param string $string Data to write.
+     *
+     * @return int The number of bytes written.
+     */
+    private function writeToResource(string $string): int
+    {
+        return fwrite($this->contents, $string);
+    }
+
+    /**
+     * Writes data to the internal string buffer.
+     *
+     * Appends the string, advances the pointer, and returns the number of bytes written.
+     *
+     * @param string $string Data to write.
+     *
+     * @return int The number of bytes written.
+     */
+    private function writeToString(string $string): int
+    {
+        $this->contents .= $string;
+        $written = strlen($string);
+        $this->pointer += $written;
+
+        return $written;
     }
 }
