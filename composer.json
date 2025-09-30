@@ -12,18 +12,22 @@
     ],
     "autoload": {
         "psr-4": {
-            "Zenigata\\Testing\\": "src/",
+            "Zenigata\\Testing\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Zenigata\\Testing\\Test\\": "tests/"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../contracts"
-        }
-    ],
     "require": {
-        "zenigata/contracts": "*"
+        "psr/cache": "^3.0",
+        "psr/clock": "^1.0",
+        "psr/container": "^2.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-server-middleware": "^1.0",
+        "psr/log": "^3.0",
+        "psr/simple-cache": "^3.0"
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
