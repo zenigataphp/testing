@@ -29,6 +29,12 @@ use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
+use Zenigata\Testing\Http\FakeUri;
+use Zenigata\Testing\Http\FakeStream;
+use Zenigata\Testing\Http\FakeUploadedFile;
+use Zenigata\Testing\Http\FakeRequest;
+use Zenigata\Testing\Http\FakeResponse;
+use Zenigata\Testing\Http\FakeServerRequest;
 
 /**
  * Fake implementation of all PSR-17 HTTP factories:

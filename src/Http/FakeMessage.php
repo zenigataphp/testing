@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Http;
 
 use function array_merge;
-use function gettype;
+use function get_debug_type;
 use function implode;
 use function is_array;
 use function is_string;
@@ -44,7 +44,7 @@ class FakeMessage implements MessageInterface
                 throw new LogicException(sprintf(
                     "Header '%s' must be an array of strings, got %s.",
                     $name,
-                    gettype($value)
+                    get_debug_type($value)
                 ));
             }
 
@@ -54,7 +54,7 @@ class FakeMessage implements MessageInterface
                         "Header '%s' expects strings, but index %d has type %s.",
                         $name,
                         $i,
-                        gettype($v)
+                        get_debug_type($v)
                     ));
                 }
             }

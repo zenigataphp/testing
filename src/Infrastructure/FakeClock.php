@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing;
+namespace Zenigata\Testing\Infrastructure;
 
 use function is_string;
 
