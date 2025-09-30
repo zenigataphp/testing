@@ -91,7 +91,7 @@ final class FakeMessageTest extends TestCase
     public function testThrowIfHeaderValueContainsNonString(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Header 'X-Custom-Header' expects strings, but index 0 has type integer");
+        $this->expectExceptionMessage("Header 'X-Custom-Header' expects strings, but index 0 has type int");
 
         new FakeMessage(headers: ['X-Custom-Header' => [42]]);
     }

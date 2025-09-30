@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit;
+namespace Zenigata\Testing\Test\Infrastructure;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Zenigata\Testing\FakeClock;
+use Zenigata\Testing\Infrastructure\FakeClock;
 
 /**
  * Unit test for {@see FakeClock}.

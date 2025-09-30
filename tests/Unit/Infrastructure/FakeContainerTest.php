@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit;
+namespace Zenigata\Testing\Test\Infrastructure;
 
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;
-use Zenigata\Testing\FakeContainer;
+use Zenigata\Testing\Infrastructure\FakeContainer;
 
 /**
  * Unit test for {@see FakeContainer}.

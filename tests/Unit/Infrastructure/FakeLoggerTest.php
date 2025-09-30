@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Zenigata\Testing\Test\Unit;
+namespace Zenigata\Testing\Test\Infrastructure;
 
 use Stringable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Zenigata\Testing\FakeLogger;
+use Zenigata\Testing\Infrastructure\FakeLogger;
 
 /**
  * Unit test for {@see FakeLogger}.
