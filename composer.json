@@ -2,8 +2,6 @@
     "name": "zenigata/testing",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.0-alpha",
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
@@ -21,6 +19,7 @@
         }
     },
     "require": {
+        "php": "^8.4",
         "psr/cache": "^3.0",
         "psr/clock": "^1.0",
         "psr/container": "^2.0",
