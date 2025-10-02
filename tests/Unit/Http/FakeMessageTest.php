@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Http;
 
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeMessage;
 use Zenigata\Testing\Http\FakeStream;

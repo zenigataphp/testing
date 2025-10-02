@@ -6,8 +6,8 @@ namespace Zenigata\Testing\Test\Unit\Http;
 
 use const UPLOAD_ERR_OK;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\UploadedFileInterface;
 use Zenigata\Testing\Http\FakeStream;
 use Zenigata\Testing\Http\FakeUploadedFile;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Zenigata\Testing\Http\FakeRequest;
 use Zenigata\Testing\Http\FakeUri;
 
@@ -67,7 +67,7 @@ final class FakeRequestTest extends TestCase
     {
         $uri = new FakeUri(host: 'example.com');
 
-        $original = new FakeRequest()->withHeader('Host', 'original.com');
+        $original = (new FakeRequest())->withHeader('Host', 'original.com');
         $preserved = $original->withUri($uri, preserveHost: true);
 
         $this->assertSame(['original.com'], $preserved->getHeader('Host'));

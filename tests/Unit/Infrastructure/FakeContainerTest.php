@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Infrastructure;
 
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Container\NotFoundExceptionInterface;
 use Zenigata\Testing\Infrastructure\FakeContainer;
 
@@ -57,7 +57,7 @@ final class FakeContainerTest extends TestCase
         new FakeContainer(['foo', 'bar']);
     }
 
-    public function testHas(): void
+    public function testHasDetectsService(): void
     {
         $container = new FakeContainer();
 

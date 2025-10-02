@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Infrastructure;
 
 use Stringable;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Zenigata\Testing\Infrastructure\FakeLogger;
 
 /**

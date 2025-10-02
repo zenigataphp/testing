@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Unit\Cache;
 
 use DateInterval;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Zenigata\Testing\Cache\FakeSimpleCache;
 
 /**

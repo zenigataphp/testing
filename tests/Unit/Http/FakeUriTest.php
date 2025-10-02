@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\UriInterface;
 use Zenigata\Testing\Http\FakeUri;
 
@@ -114,7 +114,7 @@ final class FakeUriTest extends TestCase
 
     public function testWithUserInfoHandlesNullPassword(): void
     {
-        $uri = new FakeUri()->withUserInfo('user');
+        $uri = (new FakeUri())->withUserInfo('user');
 
         $this->assertSame('user', $uri->getUserInfo());
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Zenigata\Testing\Http\FakeServerRequest;
 
 /**
