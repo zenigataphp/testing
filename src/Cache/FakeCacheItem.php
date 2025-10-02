@@ -117,8 +117,8 @@ class FakeCacheItem implements CacheItemInterface
             $this->expiration = null;
         } else {
             $this->expiration = $time instanceof DateInterval
-                ? new DateTimeImmutable()->add($time)
-                : new DateTimeImmutable()->modify("+$time seconds");
+                ? (new DateTimeImmutable())->add($time)
+                : (new DateTimeImmutable())->modify("+$time seconds");
         }
 
         return $this;
