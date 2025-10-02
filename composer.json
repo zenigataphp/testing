@@ -3,6 +3,7 @@
     "type": "library",
     "license": "MIT",
     "prefer-stable": true,
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Ilario Promutico"
@@ -19,7 +20,7 @@
         }
     },
     "require": {
-        "php": "^8.4",
+        "php": "^8.2 || ^8.3 || ^8.4",
         "psr/cache": "^3.0",
         "psr/clock": "^1.0",
         "psr/container": "^2.0",
@@ -30,9 +31,15 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^12.2"
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5 || ^12.0"
     },
     "scripts": {
-        "test": "phpunit --configuration phpunit.xml"
+        "phpstan": "vendor/bin/phpstan analyse src tests --memory-limit=512M",
+        "phpunit": "phpunit --configuration phpunit.xml --testdox",
+        "test": [
+            "@phpstan",
+            "@phpunit"
+        ]
     }
 }
