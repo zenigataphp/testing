@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zenigata\Testing\Test\Infrastructure;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Zenigata\Testing\Infrastructure\FakeClock;
 
 /**
@@ -28,7 +28,7 @@ final class FakeClockTest extends TestCase
         $clock = new FakeClock();
 
         $this->assertInstanceOf(DateTimeImmutable::class, $clock->now());
-        $this->assertSame(new DateTimeImmutable()->getTimestamp(), $clock->now()->getTimestamp());
+        $this->assertSame((new DateTimeImmutable())->getTimestamp(), $clock->now()->getTimestamp());
     }
 
     public function testAcceptDateTimeImmutable(): void
