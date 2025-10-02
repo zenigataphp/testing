@@ -43,18 +43,11 @@ use Psr\Http\Message\StreamInterface;
 class FakeStream implements StreamInterface
 {
     /**
-     * Number of times the stream has been read.
-     *
-     * @var int
-     */
-    public int $readCount = 0;
-
-    /**
-     * History of string chunks read from the stream.
+     * Chunks of data read from the stream, recorded in the order they were read.
      *
      * @var string[]
      */
-    public array $readHistory = [];
+    public array $reads = [];
 
     /**
      * Creates a new fake stream instance.
@@ -173,7 +166,7 @@ class FakeStream implements StreamInterface
     /**
      * Reads up to $length bytes from the stream, advancing the pointer.
      *
-     * Tracks the read operation count and stores the read chunk.
+     * Tracks the read operation storing the read chunk.
      *
      * @param int $length Maximum number of bytes to read.
      * 
@@ -185,8 +178,7 @@ class FakeStream implements StreamInterface
             ? $this->readFromResource($length)
             : $this->readFromString($length);
 
-        $this->readCount++;
-        $this->readHistory[] = $chunk;
+        $this->reads[] = $chunk;
 
         return $chunk;
     }
