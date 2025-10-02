@@ -15,8 +15,8 @@ use function rewind;
 use function stream_get_contents;
 
 use RuntimeException;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeStream;
 
@@ -57,8 +57,7 @@ final class FakeStreamTest extends TestCase
         $this->assertSame(0, $stream->tell());
         $this->assertSame(0, $stream->getSize());
         $this->assertTrue($stream->eof());
-        $this->assertSame(0, $stream->readCount);
-        $this->assertEmpty($stream->readHistory);
+        $this->assertEmpty($stream->reads);
     }
 
     public function getMetadata(): void
@@ -120,8 +119,7 @@ final class FakeStreamTest extends TestCase
 
         $this->assertSame('abc', $result1);
         $this->assertSame('def', $result2);
-        $this->assertSame(2, $stream->readCount);
-        $this->assertSame(['abc', 'def'], $stream->readHistory);
+        $this->assertSame(['abc', 'def'], $stream->reads);
         $this->assertTrue($stream->eof());
     }
 
@@ -135,8 +133,7 @@ final class FakeStreamTest extends TestCase
         $chunk = $stream->read(3);
 
         $this->assertSame('abc', $chunk);
-        $this->assertSame(1, $stream->readCount);
-        $this->assertSame(['abc'], $stream->readHistory);
+        $this->assertSame(['abc'], $stream->reads);
 
         fclose($resource);
     }
