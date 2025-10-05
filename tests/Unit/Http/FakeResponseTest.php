@@ -18,8 +18,7 @@ use Zenigata\Testing\Http\FakeStream;
  *
  * - Default status code and reason phrase.
  * - Immutability when changing status code and reason phrase via {@see FakeResponse::withStatus()}.
- * - Override the reason phrase explicitly.
- * - Allow an empty reason phrase.
+ * - Ensure the reason phrase associated with the HTTP status code, when left empty.
  * - Ensure headers, body, and protocol version are preserved when changing status.
  */
 #[CoversClass(FakeResponse::class)]
@@ -36,27 +35,23 @@ final class FakeResponseTest extends TestCase
     public function testWithStatus(): void
     {
         $original = new FakeResponse();
-        $modified = $original->withStatus(404, 'Not Found');
+        $modified = $original->withStatus(418, "I'm a teapot");
 
         $this->assertNotSame($original, $modified);
         $this->assertSame(200, $original->getStatusCode());
-        $this->assertSame(404, $modified->getStatusCode());
+        $this->assertSame(418, $modified->getStatusCode());
+        $this->assertSame("I'm a teapot", $modified->getReasonPhrase());
     }
 
-    public function testWithStatusOverridesReasonPhrase(): void
+    public function testWithStatusDefaultsEmptyReasonPhrase(): void
     {
         $response = new FakeResponse();
-        $response = $response->withStatus(404, 'Not Found');
+        
+        $response = $response->withStatus(201);
+        $this->assertSame('Created', $response->getReasonPhrase());
 
-        $this->assertSame('Not Found', $response->getReasonPhrase());
-    }
-
-    public function testWithStatusAcceptsEmptyReasonPhrase(): void
-    {
-        $response = new FakeResponse(403, 'Forbidden');
-        $response = $response->withStatus(403, '');
-
-        $this->assertSame('', $response->getReasonPhrase());
+        $response = $response->withStatus(403);
+        $this->assertSame('Forbidden', $response->getReasonPhrase());
     }
 
     public function testWithStatusPreservesHeadersBodyAndProtocol(): void
@@ -65,7 +60,7 @@ final class FakeResponseTest extends TestCase
         $body = new FakeStream('foo');
 
         $original = new FakeResponse(200, 'OK', $headers, $body, '2');
-        $modified = $original->withStatus(201, 'Created');
+        $modified = $original->withStatus(201);
 
         $this->assertSame($headers, $modified->getHeaders());
         $this->assertSame($body, $modified->getBody());
