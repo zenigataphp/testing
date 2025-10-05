@@ -47,7 +47,7 @@ use Zenigata\Testing\Http\FakeServerRequest;
 final class FakeHttpFactoryTest extends TestCase
 {
     /**
-     * Fake http factory instance under test.
+     * Fake HTTP factory instance under test.
      *
      * @var FakeHttpFactory
      */

@@ -24,14 +24,14 @@ class FakeContainer implements ContainerInterface
     /**
      * In-memory map of service identifiers to their corresponding instances or values.
      * 
-     * @var array<string, mixed>
+     * @var array<string,mixed>
      */
     public array $entries = [];
 
     /**
      * Creates a new fake container instance.
      *
-     * @param array<string, mixed> $entries Associative array mapping service IDs to instances/values.
+     * @param array<string,mixed> $entries Associative array mapping service IDs to instances/values.
      * 
      * @throws LogicException If entries are not set as associative array.
      */

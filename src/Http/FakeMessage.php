@@ -28,7 +28,7 @@ use Psr\Http\Message\StreamInterface;
 class FakeMessage implements MessageInterface
 {
     /**
-     * @param array<string, string[]> $headers  Initial message headers as an associative array.
+     * @param array<string,string[]> $headers  Initial message headers as an associative array.
      * @param StreamInterface|null    $body     Optional message body stream.
      * @param string                  $protocol HTTP protocol version (default: "1.1").
      * 
@@ -89,7 +89,7 @@ class FakeMessage implements MessageInterface
     /**
      * Returns all headers as an associative array: name => array of values.
      *
-     * @return array<string, string[]> The headers array.
+     * @return array<string,string[]> The headers array.
      */
     public function getHeaders(): array
     {
@@ -191,11 +191,7 @@ class FakeMessage implements MessageInterface
      */
     public function getBody(): StreamInterface
     {
-        if ($this->body === null) {
-            $this->body = new FakeStream();
-        }
-
-        return $this->body;
+        return $this->body ??= new FakeStream();
     }
 
     /**

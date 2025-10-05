@@ -18,14 +18,14 @@ class FakeCacheItemPool implements CacheItemPoolInterface
     /** 
      * In-memory store of cache items keyed by their cache keys.
      * 
-     * @var array<string, CacheItemInterface> 
+     * @var array<string,CacheItemInterface> 
      */
     public array $items = [];
 
     /**
      * Deferred cache items waiting to be committed.
      * 
-     * @var array<string, CacheItemInterface> 
+     * @var array<string,CacheItemInterface> 
      */
     public array $deferred = [];
 
@@ -46,9 +46,9 @@ class FakeCacheItemPool implements CacheItemPoolInterface
     /**
      * Retrieves multiple cache items by their keys.
      *
-     * @param array<int, string> $keys List of cache keys to retrieve.
+     * @param array<int,string> $keys List of cache keys to retrieve.
      * 
-     * @return iterable<string, CacheItemInterface> Iterable of cache items keyed by cache keys.
+     * @return iterable<string,CacheItemInterface> Iterable of cache items keyed by cache keys.
      */
     public function getItems(array $keys = []): iterable
     {
@@ -102,7 +102,7 @@ class FakeCacheItemPool implements CacheItemPoolInterface
     /**
      * Deletes multiple cache items by their keys.
      *
-     * @param array<int, string> $keys List of cache keys to delete.
+     * @param array<int,string> $keys List of cache keys to delete.
      * 
      * @return bool Always returns true.
      */

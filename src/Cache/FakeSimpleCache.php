@@ -28,7 +28,7 @@ class FakeSimpleCache implements CacheInterface
      *  - mixed               The cached value.
      *  - ?DateTimeImmutable  The expiration timestamp, or null for no expiration.
      *
-     * @var array<string, array{mixed, ?DateTimeImmutable}>
+     * @var array<string,array{mixed, ?DateTimeImmutable}>
      */
     public array $items = [];
 
@@ -105,7 +105,7 @@ class FakeSimpleCache implements CacheInterface
      * @param iterable<string> $keys    The cache keys.
      * @param mixed            $default Default value for missing or expired keys.
      * 
-     * @return iterable<string, mixed> Associative array of key-value pairs.
+     * @return iterable<string,mixed> Associative array of key-value pairs.
      */
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
