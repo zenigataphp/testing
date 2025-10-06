@@ -1,15 +1,18 @@
-# Testing
+# Zenigata Testing
 
 A lightweight PHP library offering **in-memory fake implementations** for common [PSR](https://www.php-fig.org/psr/) interfaces. They behave according to the PSR contracts but keep everything **self-contained**, making your tests faster, isolated, and free from external infrastructure.
 
+## Features
+
 - In-memory implementations for multiple PSR specs
 - Compliant with PSR contracts
-- No external dependencies required
 - Ideal for unit and integration tests
+- Lightweight
 
 ## Requirements
 
 - PHP >= 8.2
+- [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-macos)
 
 ## Installation
 
@@ -212,7 +215,9 @@ try {
 }
 ```
 
+## Dependencies
 
+- [php-http-enum](https://github.com/alexanderpas/php-http-enum): this package is used to provide standardized reason phrases in fake responses
 
 ## Contributing
 
