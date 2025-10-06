@@ -3,7 +3,6 @@
     "type": "library",
     "license": "MIT",
     "prefer-stable": true,
-    "version": "1.0.0",
     "authors": [
         {
             "name": "Ilario Promutico"
