@@ -36,11 +36,11 @@
         "phpunit/phpunit": "^11.5 || ^12.0"
     },
     "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse src tests --memory-limit=512M",
-        "phpunit": "phpunit --configuration phpunit.xml --testdox",
+        "stan": "vendor/bin/phpstan analyse src tests --memory-limit=512M",
+        "unit": "phpunit --configuration phpunit.xml --testdox",
         "test": [
-            "@phpstan",
-            "@phpunit"
+            "@stan",
+            "@unit"
         ]
     }
 }
