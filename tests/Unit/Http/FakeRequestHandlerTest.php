@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 use Zenigata\Testing\Http\FakeRequestHandler;
 use Zenigata\Testing\Http\FakeResponse;
 use Zenigata\Testing\Http\FakeServerRequest;
@@ -23,6 +24,7 @@ use Zenigata\Testing\Http\FakeServerRequest;
  * - Default instantiation as a valid {@see RequestHandlerInterface}.
  * - Return a default fake response when no custom response is provided.
  * - Return a custom response when injected via the constructor.
+ * - Throw a preconfigured exception instead of returning a response.
  * - Correct execution of `onHandle()` and `onResponse()` hooks.
  */
 #[CoversClass(FakeRequestHandler::class)]
@@ -43,6 +45,7 @@ final class FakeRequestHandlerTest extends TestCase
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertInstanceOf(FakeResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     public function testReturnCustomResponseIfProvided(): void
@@ -53,6 +56,16 @@ final class FakeRequestHandlerTest extends TestCase
         $response = $handler->handle(new FakeServerRequest());
 
         $this->assertSame($initialResponse, $response);
+    }
+
+    public function testThrowExceptionIfProvided(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Custom exception');
+
+        $handler = new FakeRequestHandler(throwable: new RuntimeException('Custom exception'));
+
+        $handler->handle(new FakeServerRequest());
     }
 
     public function testHooksCorrectExecution(): void

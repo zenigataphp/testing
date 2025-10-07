@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 use Zenigata\Testing\Http\FakeMiddleware;
 use Zenigata\Testing\Http\FakeRequestHandler;
 use Zenigata\Testing\Http\FakeResponse;
@@ -26,6 +27,8 @@ use Zenigata\Testing\Http\FakeServerRequest;
  * - Delegation of request processing to the provided request handler.
  * - Return type compliance with {@see ResponseInterface}.
  * - Correct propagation of a custom response returned by the handler.
+ * - Return a custom response when injected via the constructor.
+ * - Throw a preconfigured exception instead of returning a response.
  * - Correct execution of `onHandle()` and `onResponse()` hooks.
  */
 #[CoversClass(FakeMiddleware::class)]
@@ -66,7 +69,7 @@ final class FakeMiddlewareTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    public function testDelegateToHandler(): void
+    public function testDelegateResponseToHandler(): void
     {
         $expectedResponse = new FakeResponse();
         $middleware = new FakeMiddleware();
@@ -77,6 +80,29 @@ final class FakeMiddlewareTest extends TestCase
         );
 
         $this->assertSame($expectedResponse, $response);
+    }
+
+    public function testReturnCustomResponseIfProvided(): void
+    {
+        $initialResponse = new FakeResponse(statusCode: 400);
+        $middleware = new FakeMiddleware($initialResponse);
+
+        $response = $middleware->process(
+            request: new FakeServerRequest(),
+            handler: new FakeRequestHandler()
+        );
+
+        $this->assertSame($initialResponse, $response);
+    }
+
+    public function testThrowExceptionIfProvided(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Custom exception');
+
+        $handler = new FakeMiddleware(throwable: new RuntimeException('Custom exception'));
+
+        $handler->process(new FakeServerRequest(), new FakeRequestHandler());
     }
 
     public function testHooksCorrectExecution(): void
