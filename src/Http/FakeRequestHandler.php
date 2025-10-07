@@ -14,8 +14,7 @@ use Zenigata\Testing\Http\FakeResponse;
  * Fake implementation of {@see RequestHandlerInterface} (PSR-15).
  *
  * It optionally returns a preconfigured {@see ResponseInterface},
- * or throws a preconfigured {@see Throwable}, allowing testing of
- * request handling and exception propagation in a controlled way.
+ * or throws a preconfigured {@see Throwable}.
  * 
  * It provides overridable hook methods that let subclasses intercept the request/response 
  * lifecycle to add custom logic, which is particularly handy in testing
