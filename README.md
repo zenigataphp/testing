@@ -138,23 +138,6 @@ try {
 
 `FakeContainer` exposes the `$entries` property contains the in-memory **map of services**.
 
-
-### `FakeSimpleCache` (PSR-16)
-
-```php
-use Zenigata\Testing\Cache\FakeSimpleCache;
-
-$cache = new FakeSimpleCache();
-$cache->set('foo', 'bar');
-
-assert($cache->get('foo') === 'bar');
-
-// Internal storage can also be inspected
-assert($cache->items['foo'] === 'bar');
-```
-
-Like `FakeCacheItemPool`, `FakeSimpleCache` exposes an `$items` property with all cached values.
-
 ### `FakeRequestHandler` (PSR-15)
 
 #### 1. Using Hooks to Inspect the Request
@@ -213,6 +196,35 @@ try {
 } catch (RuntimeException $e) {
     assert($e->getMessage() === 'Something failed');
 }
+```
+
+### `FakeSimpleCache` (PSR-16)
+
+```php
+use Zenigata\Testing\Cache\FakeSimpleCache;
+
+$cache = new FakeSimpleCache();
+$cache->set('foo', 'bar');
+
+assert($cache->get('foo') === 'bar');
+
+// Internal storage can also be inspected
+assert($cache->items['foo'] === 'bar');
+```
+
+Like `FakeCacheItemPool`, `FakeSimpleCache` exposes an `$items` property with all cached values.
+
+### `FakeClock` (PSR-20)
+
+```php
+use Zenigata\Testing\Infrastructure\FakeClock;
+
+$datetime = new DateTimeImmutable('2023-01-01 00:00:00');
+
+$clock = new FakeClock($datetime);
+
+// Return the fixed time set at construction
+assert($clock->now() === $datetime);
 ```
 
 ## Dependencies
