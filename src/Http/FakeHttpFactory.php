@@ -10,12 +10,12 @@ use function fclose;
 use function fopen;
 use function is_readable;
 use function is_resource;
-use function parse_url;
 use function rewind;
 use function str_starts_with;
 use function stream_get_contents;
 use function substr;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -61,7 +61,7 @@ class FakeHttpFactory implements
      */
     public function createRequest(string $method, $uri): RequestInterface
     {
-        return new FakeRequest($method, $uri instanceof UriInterface ? $uri : new FakeUri());
+        return new FakeRequest($method, $uri);
     }
 
     /**
@@ -80,7 +80,7 @@ class FakeHttpFactory implements
         return new FakeServerRequest(
             serverParams: $serverParams,
             method:       $method,
-            uri:          $uri instanceof UriInterface ? $uri : new FakeUri()
+            uri:          $uri
         );
     }
 
@@ -167,22 +167,11 @@ class FakeHttpFactory implements
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws InvalidArgumentException If the URI string is malformed and cannot be parsed.
      */
     public function createUri(string $uri = ''): UriInterface
     {
-        $parsed = parse_url($uri);
-
-        $user = $parsed['user'] ?? '';
-        $pass = $parsed['pass'] ?? '';
-
-        return new FakeUri(
-            scheme:   $parsed['scheme'] ?? '',
-            userInfo: $pass ? "$user:$pass" : $user,
-            host:     $parsed['host'] ?? '',
-            port:     $parsed['port'] ?? null,
-            path:     $parsed['path'] ?? '',
-            query:    $parsed['query'] ?? '',
-            fragment: $parsed['fragment'] ?? ''
-        );
+        return FakeUri::fromString($uri);
     }
 }

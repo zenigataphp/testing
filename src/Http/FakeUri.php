@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Http;
 
+use function parse_url;
 use function rtrim;
+use function sprintf;
 
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -20,8 +23,8 @@ class FakeUri implements UriInterface
     /**
      * Creates a new fake uri instance.
      *
-     * @param string   $scheme   URI scheme (default: "http").
-     * @param string   $host     URI host name (default: "localhost").
+     * @param string   $scheme   URI scheme (default: "").
+     * @param string   $host     URI host name (default: "").
      * @param string   $path     URI path component (default: "/").
      * @param int|null $port     URI port number or null if none.
      * @param string   $userInfo User info (e.g., "user:pass"), if any.
@@ -29,8 +32,8 @@ class FakeUri implements UriInterface
      * @param string   $fragment URI fragment.
      */
     public function __construct(
-        private string $scheme = 'http',
-        private string $host = 'localhost',
+        private string $scheme = '',
+        private string $host = '',
         private string $path = '/',
         private ?int $port = null,
         private string $userInfo = '',
@@ -68,6 +71,39 @@ class FakeUri implements UriInterface
         }
         
         return $uri;
+    }
+
+    /**
+     * Creates a new fake uri instance from a URI string.
+     *
+     * @param string $uri The URI string to parse.
+     *
+     * @return static A new fake uri instance.
+     * @throws InvalidArgumentException If the URI string is malformed and cannot be parsed.
+     */
+    public static function fromString(string $uri): static
+    {
+        $parsed = parse_url($uri);
+
+        if ($parsed === false) {
+            throw new InvalidArgumentException(sprintf(
+                "Unable to parse URI string '%s': invalid RFC 3986 syntax or illegal characters.",
+                $uri
+            ));
+        }
+
+        $user = $parsed['user'] ?? '';
+        $pass = $parsed['pass'] ?? '';
+
+        return new self(
+            scheme:   $parsed['scheme']   ?? '',
+            host:     $parsed['host']     ?? '',
+            path:     $parsed['path']     ?? '/',
+            port:     isset($parsed['port']) ? (int) $parsed['port'] : null,
+            userInfo: $pass ? "$user:$pass" : $user,
+            query:    $parsed['query']    ?? '',
+            fragment: $parsed['fragment'] ?? '',
+        );
     }
 
     /**
