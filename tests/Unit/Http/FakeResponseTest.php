@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
+use function fopen;
+
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeResponse;
 use Zenigata\Testing\Http\FakeStream;
 
@@ -65,5 +68,25 @@ final class FakeResponseTest extends TestCase
         $this->assertSame($headers, $modified->getHeaders());
         $this->assertSame($body, $modified->getBody());
         $this->assertSame('2', $modified->getProtocolVersion());
+    }
+
+    public function testConstructorAcceptsStringBody(): void
+    {
+        $request = new FakeResponse(body: 'Hello World');
+        $body = $request->getBody();
+
+        $this->assertInstanceOf(StreamInterface::class, $body);
+        $this->assertSame('Hello World', (string) $body);
+    }
+
+    public function testConstructorAcceptsResourceBody(): void
+    {
+        $resource = fopen('data://text/plain,Streamed data', 'r');
+
+        $request  = new FakeResponse(body: $resource);
+        $body = $request->getBody();
+
+        $this->assertInstanceOf(StreamInterface::class, $body);
+        $this->assertSame('Streamed data', (string) $body);
     }
 }
