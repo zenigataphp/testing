@@ -20,18 +20,18 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
     /**
      * Creates a new fake server request instance.
      *
-     * @param array                $serverParams  Server parameters.
-     * @param array                $cookieParams  Cookies sent by the client.
-     * @param array                $queryParams   Query string parameters.
-     * @param array                $uploadedFiles Uploaded files, as an array of UploadedFileInterface.
-     * @param mixed                $parsedBody    Deserialized request body content.
-     * @param array                $attributes    Custom request attributes.
-     * @param string               $method        HTTP method (default: "GET").
-     * @param string               $requestTarget Request target, path or full URI (default: "/").
-     * @param UriInterface         $uri           Request URI.
-     * @param array                $headers       HTTP headers.
-     * @param StreamInterface|null $body          Message body stream.
-     * @param string               $protocol      HTTP protocol version (default: "1.1").
+     * @param array                  $serverParams  Server parameters.
+     * @param array                  $cookieParams  Cookies sent by the client.
+     * @param array                  $queryParams   Query string parameters.
+     * @param array                  $uploadedFiles Uploaded files, as an array of UploadedFileInterface.
+     * @param mixed                  $parsedBody    Deserialized request body content.
+     * @param array                  $attributes    Custom request attributes.
+     * @param string                 $method        HTTP method (default: "GET").
+     * @param string                 $requestTarget Request target, path or full URI (default: "/").
+     * @param UriInterface|string    $uri           Request URI.
+     * @param array<string,string[]> $headers       HTTP headers.
+     * @param mixed                  $body          Message body stream.
+     * @param string                 $protocol      HTTP protocol version (default: "1.1").
      */
     public function __construct(
         private array $serverParams = [],
@@ -41,12 +41,16 @@ class FakeServerRequest extends FakeRequest implements ServerRequestInterface
         private mixed $parsedBody = null,
         private array $attributes = [],
         string $method = 'GET',
-        private string $requestTarget = '/',
-        UriInterface $uri = new FakeUri(),
+        string $requestTarget = '/',
+        UriInterface|string $uri = new FakeUri(),
         array $headers = [],
-        ?StreamInterface $body = null,
+        mixed $body = null,
         string $protocol = '1.1',
     ) {
+        if ($body !== null && !$body instanceof StreamInterface) {
+            $body = new FakeStream($body);
+        }
+
         parent::__construct($method, $uri, $requestTarget, $headers, $body, $protocol);
     }
 

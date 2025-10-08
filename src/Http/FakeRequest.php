@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Http;
 
+use function is_string;
+
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -18,24 +20,41 @@ use Psr\Http\Message\UriInterface;
 class FakeRequest extends FakeMessage implements RequestInterface
 {
     /**
+     * The request URI.
+     *
+     * @var UriInterface
+     */
+    private UriInterface $uri;
+
+    /**
      * Creates a new fake HTTP request instance.
      *
-     * @param string                  $method        HTTP method (default: "GET").
-     * @param UriInterface            $uri           Request URI.
-     * @param string                  $requestTarget Request target, path or full URI (default: "/").
+     * @param string                 $method        HTTP method (default: "GET").
+     * @param UriInterface|string    $uri           Request URI.
+     * @param string                 $requestTarget Request target, path or full URI (default: "/").
      * @param array<string,string[]> $headers       Initial headers.
-     * @param StreamInterface|null    $body          Optional message body stream.
-     * @param string                  $protocol      HTTP protocol version (default: "1.1").
+     * @param mixed                  $body          Optional message body stream.
+     * @param string                 $protocol      HTTP protocol version (default: "1.1").
      */
     public function __construct(
         private string $method = 'GET',
-        private UriInterface $uri = new FakeUri(),
+        UriInterface|string $uri = new FakeUri(),
         private string $requestTarget = '/',
         array $headers = [],
-        ?StreamInterface $body = null,
+        mixed $body = null,
         string $protocol = '1.1',
     ) {
+        if ($body !== null && !$body instanceof StreamInterface) {
+            $body = new FakeStream($body);
+        }
+
         parent::__construct($headers, $body, $protocol);
+
+        if (is_string($uri)) {
+            $uri = FakeUri::fromString($uri);
+        }
+
+        $this->uri = $uri;
     }
 
     /**

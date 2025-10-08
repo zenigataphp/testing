@@ -18,13 +18,6 @@ use Psr\Http\Message\StreamInterface;
 class FakeResponse extends FakeMessage implements ResponseInterface
 {
     /**
-     * The HTTP status code of the response.
-     *
-     * @var int
-     */
-    private int $statusCode;
-
-    /**
      * The reason phrase associated with the HTTP status code.
      *
      * @var string
@@ -34,22 +27,24 @@ class FakeResponse extends FakeMessage implements ResponseInterface
     /**
      * Creates a new fake response instance.
      *
-     * @param int                  $statusCode   HTTP status code (default: 200).
-     * @param string               $reasonPhrase Optional reason phrase; if empty, the status code's default is used. (default: "").
-     * @param array                $headers      HTTP headers (default: []).
-     * @param StreamInterface|null $body         Message body stream (default: null).
-     * @param string               $protocol     HTTP protocol version (default: "1.1").
+     * @param int                    $statusCode   HTTP status code (default: 200).
+     * @param string                 $reasonPhrase Optional reason phrase; if empty, the status code's default is used. (default: "").
+     * @param array<string,string[]> $headers      HTTP headers (default: []).
+     * @param mixed                  $body         Message body stream (default: null).
+     * @param string                 $protocol     HTTP protocol version (default: "1.1").
      */
     public function __construct(
-        int $statusCode = 200,
+        private int $statusCode = 200,
         string $reasonPhrase = '',
         array $headers = [],
-        ?StreamInterface $body = null,
+        mixed $body = null,
         string $protocol = '1.1',
     ) {
+        if ($body !== null && !$body instanceof StreamInterface) {
+            $body = new FakeStream($body);
+        }
+
         parent::__construct($headers, $body, $protocol);
-        
-        $this->statusCode = $statusCode;
 
         $this->reasonPhrase = $reasonPhrase === ''
             ? ReasonPhrase::fromInteger($statusCode)->value
