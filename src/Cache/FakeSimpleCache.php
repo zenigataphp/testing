@@ -25,8 +25,8 @@ class FakeSimpleCache implements CacheInterface
      * 
      * Each entry is stored as an array of two elements:
      * 
-     *  - mixed               The cached value.
-     *  - ?DateTimeImmutable  The expiration timestamp, or null for no expiration.
+     *  - mixed              The cached value.
+     *  - ?DateTimeImmutable The expiration timestamp, or null for no expiration.
      *
      * @var array<string,array{mixed, ?DateTimeImmutable}>
      */

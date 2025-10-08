@@ -14,9 +14,11 @@ use function fseek;
 use function fstat;
 use function ftell;
 use function fwrite;
+use function get_debug_type;
 use function is_resource;
 use function is_string;
 use function rewind;
+use function sprintf;
 use function stream_get_contents;
 use function strlen;
 use function substr;
@@ -68,7 +70,10 @@ class FakeStream implements StreamInterface
         private int $pointer  = 0
     ) {
         if (!is_string($contents) && !is_resource($contents)) {
-            throw new InvalidArgumentException('Contents must be string or resource');
+            throw new InvalidArgumentException(sprintf(
+                "Invalid type for stream contents. Expected one of [string, resource], got '%s'.",
+                get_debug_type($contents)
+            ));
         }
     }
 

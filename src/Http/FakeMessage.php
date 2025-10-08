@@ -29,8 +29,8 @@ class FakeMessage implements MessageInterface
 {
     /**
      * @param array<string,string[]> $headers  Initial message headers as an associative array.
-     * @param StreamInterface|null    $body     Optional message body stream.
-     * @param string                  $protocol HTTP protocol version (default: "1.1").
+     * @param StreamInterface|null   $body     Optional message body stream.
+     * @param string                 $protocol HTTP protocol version (default: "1.1").
      * 
      * @throws LogicException If any header value is not an array of strings.
      */
