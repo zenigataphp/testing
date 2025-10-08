@@ -23,7 +23,7 @@ use Zenigata\Testing\Http\FakeUri;
  * - Build the full URI string from all components.
  * - Immutability of `with*` methods, which return modified clones with updated components.
  * - Handle of `withUserInfo()` when the password is omitted.
- * - // TODO aggiungere test case create fromString
+ * - Instance created from parsed URI string.
  */
 #[CoversClass(FakeUri::class)]
 final class FakeUriTest extends TestCase

@@ -23,6 +23,7 @@ use Zenigata\Testing\Http\FakeStream;
  * - Immutability when changing status code and reason phrase via {@see FakeResponse::withStatus()}.
  * - Ensure the reason phrase associated with the HTTP status code, when left empty.
  * - Ensure headers, body, and protocol version are preserved when changing status.
+ * - Stream automatically created from string or resource.
  */
 #[CoversClass(FakeResponse::class)]
 final class FakeResponseTest extends TestCase

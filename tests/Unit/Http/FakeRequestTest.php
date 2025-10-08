@@ -24,6 +24,7 @@ use Zenigata\Testing\Http\FakeUri;
  * - Change the request target via {@see FakeRequest::withRequestTarget()}.
  * - Update the URI and automatically setting the Host header.
  * - Preserve the original Host header when requested.
+ * - Stream automatically created from string or resource.
  */
 #[CoversClass(FakeRequest::class)]
 final class FakeRequestTest extends TestCase
