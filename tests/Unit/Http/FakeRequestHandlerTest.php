@@ -63,7 +63,7 @@ final class FakeRequestHandlerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Custom exception');
 
-        $handler = new FakeRequestHandler(throwable: new RuntimeException('Custom exception'));
+        $handler = new FakeRequestHandler(exception: new RuntimeException('Custom exception'));
 
         $handler->handle(new FakeServerRequest());
     }

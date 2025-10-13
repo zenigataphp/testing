@@ -100,7 +100,7 @@ final class FakeMiddlewareTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Custom exception');
 
-        $handler = new FakeMiddleware(throwable: new RuntimeException('Custom exception'));
+        $handler = new FakeMiddleware(exception: new RuntimeException('Custom exception'));
 
         $handler->process(new FakeServerRequest(), new FakeRequestHandler());
     }

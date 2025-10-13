@@ -43,7 +43,7 @@ final class FakeContainerTest extends TestCase
     public function testThrowIfServiceIsMissing(): void
     {
         $this->expectException(NotFoundExceptionInterface::class);
-        $this->expectExceptionMessage("Service 'missing' not found");
+        $this->expectExceptionMessage("Service 'missing' not found.");
 
         $container = new FakeContainer();
         $container->get('missing');
