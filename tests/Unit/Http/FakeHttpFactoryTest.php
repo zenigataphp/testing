@@ -71,6 +71,7 @@ final class FakeHttpFactoryTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertInstanceOf(FakeRequest::class, $request);
         $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('http://example.com/', (string) $request->getUri());
     }
 
     public function testCreateResponseReturnsFakeResponse(): void
