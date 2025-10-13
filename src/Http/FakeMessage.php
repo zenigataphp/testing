@@ -7,9 +7,9 @@ namespace Zenigata\Testing\Http;
 use function array_merge;
 use function get_debug_type;
 use function implode;
-use function is_array;
 use function is_string;
 use function sprintf;
+use function strtolower;
 
 use LogicException;
 use Psr\Http\Message\MessageInterface;
@@ -22,43 +22,32 @@ use Psr\Http\Message\StreamInterface;
  * including protocol version, headers, and body handling, without performing any actual I/O.
  * It allows you to simulate and inspect PSR-7 message behavior for testing purposes.
  *
- * The constructor validates that all provided headers are arrays of strings,
- * throwing a {@see LogicException} otherwise.
+ * Headers are internally normalized for a better dev experience: you can freely set 
+ * and access headers without worrying about case sensitivity or value formatting.
  */
 class FakeMessage implements MessageInterface
 {
     /**
-     * @param array<string,string[]> $headers  Initial message headers as an associative array.
-     * @param StreamInterface|null   $body     Optional message body stream.
-     * @param string                 $protocol HTTP protocol version (default: "1.1").
-     * 
-     * @throws LogicException If any header value is not an array of strings.
+     * Normalized message headers.
+     *
+     * All header names are stored in lowercase for case-insensitive access,
+     * and each header value is an array of strings.
+     *
+     * @var array<string,string[]>
+     */
+    protected array $headers;
+
+    /**
+     * @param array<string,string|string[]> $headers  Initial message headers as an associative array.
+     * @param StreamInterface|null          $body     Optional message body stream.
+     * @param string                        $protocol HTTP protocol version (default: "1.1").
      */
     public function __construct(
-        protected array $headers = [],
+        array $headers = [],
         protected ?StreamInterface $body = null,
         protected string $protocol = '1.1'
     ) {
-        foreach ($headers as $name => $value) {
-            if (!is_array($value)) {
-                throw new LogicException(sprintf(
-                    "Header '%s' must be an array of strings, got %s.",
-                    $name,
-                    get_debug_type($value)
-                ));
-            }
-
-            foreach ($value as $i => $v) {
-                if (!is_string($v)) {
-                    throw new LogicException(sprintf(
-                        "Header '%s' expects strings, but index %d has type %s.",
-                        $name,
-                        $i,
-                        get_debug_type($v)
-                    ));
-                }
-            }
-        }
+        $this->headers = $this->normalizeHeaders($headers);
     }
 
     /**
@@ -105,7 +94,7 @@ class FakeMessage implements MessageInterface
      */
     public function hasHeader($name): bool
     {
-        return isset($this->headers[$name]);
+        return $this->getHeader($name) !== [] ? true : false;
     }
 
     /**
@@ -117,7 +106,13 @@ class FakeMessage implements MessageInterface
      */
     public function getHeader($name): array
     {
-        return $this->headers[$name] ?? [];
+        foreach ($this->headers as $key => $value) {
+            if (strtolower($name) === strtolower($key)) {
+                return $value;
+            }
+        }
+
+        return [];
     }
 
     /**
@@ -143,7 +138,7 @@ class FakeMessage implements MessageInterface
     public function withHeader($name, $value): static
     {
         $clone = clone $this;
-        $clone->headers[$name] = (array) $value;
+        $clone->headers[$name] = $this->normalizeHeaderValue($name, $value);
 
         return $clone;
     }
@@ -161,7 +156,7 @@ class FakeMessage implements MessageInterface
         $clone = clone $this;
         $clone->headers[$name] = array_merge(
             $clone->headers[$name] ?? [],
-            (array) $value
+            $this->normalizeHeaderValue($name, $value)
         );
 
         return $clone;
@@ -207,5 +202,49 @@ class FakeMessage implements MessageInterface
         $clone->body = $body;
 
         return $clone;
+    }
+
+    /**
+     * Normalizes an array of headers (case-insensitive keys, array of strings).
+     *
+     * @param array<string,string[]|string> $headers
+     * 
+     * @return array<string,string[]>
+     */
+    private function normalizeHeaders(array $headers): array
+    {
+        $normalized = [];
+
+        foreach ($headers as $name => $value) {
+            $normalized[$name] = $this->normalizeHeaderValue($name, $value);
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Normalizes a header value into an array of strings.
+     *
+     * @param string|string[] $value The header value(s) to normalize.
+     * 
+     * @return string[] The normalized array of header values.
+     * @throws LogicException If any header value is not a string.
+     */
+    private function normalizeHeaderValue(string $name, string|array $value): array
+    {
+        $values = (array) $value;
+
+        foreach ($values as $index => $value) {
+            if (!is_string($value)) {
+                throw new LogicException(sprintf(
+                    "Header values must be strings. Header '%s' has type %s at index %d.",
+                    $name,
+                    get_debug_type($value),
+                    $index
+                ));
+            }
+        }
+
+        return $values;
     }
 }
