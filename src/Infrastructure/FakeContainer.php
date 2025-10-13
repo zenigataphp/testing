@@ -7,10 +7,10 @@ namespace Zenigata\Testing\Infrastructure;
 use function array_is_list;
 use function sprintf;
 
-use Exception;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Zenigata\Testing\Exception\NotFoundException;
 
 /**
  * Fake implementation of {@see ContainerInterface} (PSR-11).
@@ -58,7 +58,7 @@ class FakeContainer implements ContainerInterface
     public function get(string $id): mixed
     {
         if (!$this->has($id)) {
-            throw new class("Service '$id' not found") extends Exception implements NotFoundExceptionInterface {};
+            throw new NotFoundException("Service '$id' not found.");
         }
 
         return $this->entries[$id];

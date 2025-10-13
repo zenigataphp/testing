@@ -26,29 +26,27 @@ class FakeRequestHandler implements RequestHandlerInterface
      * Creates a new fake request handler instance.
      *
      * @param ResponseInterface $response  Response to be returned when handling a request.
-     * @param Throwable|null    $throwable Optional throwable to be thrown instead of returning a response.
+     * @param Throwable|null    $exception Optional exception to be thrown instead of returning a response.
      */
     public function __construct(
         private ResponseInterface $response = new FakeResponse(),
-        private ?Throwable $throwable = null,
+        private ?Throwable $exception = null,
     ) {}
 
     /**
      * Handles the incoming server request.
-     * 
-     * Optionally returns the configured response or throws the configured throwable.
      *
-     * @param ServerRequestInterface $request Incoming server request.
+     * @param ServerRequestInterface $request The incoming server request.
      *
-     * @return ResponseInterface The configured response, unless an exception is thrown.
-     * @throws Throwable If a throwable was configured for this handler.
+     * @return ResponseInterface The fake response instance.
+     * @throws Throwable If an exception was configured in the constructor.
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->onHandle($request);
 
-        if ($this->throwable !== null) {
-            throw $this->throwable;
+        if ($this->exception !== null) {
+            throw $this->exception;
         }
 
         $this->onResponse($this->response);
