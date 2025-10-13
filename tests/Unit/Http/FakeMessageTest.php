@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use LogicException;
+use function array_filter;
+use function array_is_list;
+use function is_array;
+
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\StreamInterface;
@@ -19,10 +22,10 @@ use Zenigata\Testing\Http\FakeStream;
  * Covered cases:
  *
  * - Default state, including empty headers, default body, and protocol version.
+ * - Header normalization ensures case-insensitive access while preserving original header names.
  * - Header access, retrieval, and string concatenation.
  * - Header manipulation via addition, replacement, and removal.
  * - Immutability when replacing the body or protocol version.
- * - Validation errors when header values are not arrays or contain non-string elements.
  */
 #[CoversClass(FakeMessage::class)]
 final class FakeMessageTest extends TestCase
@@ -37,9 +40,35 @@ final class FakeMessageTest extends TestCase
         $this->assertSame('1.1', $message->getProtocolVersion());
     }
 
+    public function testHeadersNormalization(): void
+    {
+        $message = new FakeMessage(
+            headers: [
+                'Content-Type'    => 'application/json',
+                'X-CUSTOM-Header' => ['foo', 'bar'],
+            ]
+        );
+
+        $headers = $message->getHeaders();
+        
+        // Header names are not changed
+        $this->assertArrayHasKey('Content-Type', $headers);
+        $this->assertArrayHasKey('X-CUSTOM-Header', $headers);
+
+        // Each value must be an array of strings
+        foreach ($headers as $header) {
+            $this->assertTrue(is_array($header) && array_is_list($header));
+            $this->assertTrue(array_filter($header, 'is_string') === $header);
+        }
+
+        // Case-insensitive access
+        $this->assertSame(['application/json'], $message->getHeader('content-type'));
+        $this->assertSame(['foo', 'bar'], $message->getHeader('x-custom-header'));
+    }
+
     public function testHeaderAccess(): void
     {
-        $message = new FakeMessage(headers: ['X-Custom-Header' => ['hello']]);
+        $message = new FakeMessage(headers: ['X-Custom-Header' => 'hello']);
 
         $this->assertTrue($message->hasHeader('X-Custom-Header'));
         $this->assertSame(['hello'], $message->getHeader('X-Custom-Header'));
@@ -48,7 +77,7 @@ final class FakeMessageTest extends TestCase
 
     public function testHeaderManipulation(): void
     {
-        $message = new FakeMessage(headers: ['X-Custom-Header' => ['abc']]);
+        $message = new FakeMessage(headers: ['X-Custom-Header' => 'abc']);
 
         $added = $message->withAddedHeader('X-Custom-Header', 'def');
         $replaced = $message->withHeader('X-Custom-Header', 'xyz');
@@ -78,21 +107,5 @@ final class FakeMessageTest extends TestCase
         $this->assertNotSame($original, $modified);
         $this->assertSame('1.1', $original->getProtocolVersion());
         $this->assertSame('2', $modified->getProtocolVersion());
-    }
-
-    public function testThrowIfHeaderValueIsNotArray(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Header 'X-Custom-Header' must be an array of strings");
-
-        new FakeMessage(headers: ['X-Custom-Header' => 'not-an-array']);
-    }
-
-    public function testThrowIfHeaderValueContainsNonString(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Header 'X-Custom-Header' expects strings, but index 0 has type int");
-
-        new FakeMessage(headers: ['X-Custom-Header' => [42]]);
     }
 }
