@@ -32,6 +32,7 @@ This library is meant for **testing only**, so it’s recommended to install it 
 
 ### HTTP
 
+- `FakeHttpClient`: fake implementation of [ClientInterface](https://www.php-fig.org/psr/psr-18/#clientinterface) (PSR-18)
 - `FakeHttpFactory`: fake implementation of all [HTTP Factories](https://www.php-fig.org/psr/psr-17/#2-interfaces) (PSR-17)
 - `FakeMessage`: fake implementation of [MessageInterface](https://www.php-fig.org/psr/psr-7/#31-psrhttpmessagemessageinterface) (PSR-7)
 - `FakeMiddleware`: fake implementation of [MiddlewareInterface](https://www.php-fig.org/psr/psr-15/#22-psrhttpservermiddlewareinterface) (PSR-15)
@@ -132,7 +133,7 @@ assert(count($container->entries) === 2);
 try {
     $container->get('missing');
 } catch (NotFoundExceptionInterface $e) {
-    echo $e->getMessage(); // "Service 'missing' not found"
+    echo $e->getMessage(); // "Service 'missing' not found."
 }
 ```
 
@@ -183,7 +184,7 @@ use Zenigata\Testing\Http\FakeUri;
 
 // Configure the handler to throw instead of returning a response
 $handler = new FakeRequestHandler(
-    throwable: new RuntimeException('Something failed')
+    exception: new RuntimeException('Something failed')
 );
 
 $request = new FakeServerRequest(
@@ -214,13 +215,58 @@ assert($cache->items['foo'] === 'bar');
 
 Like `FakeCacheItemPool`, `FakeSimpleCache` exposes an `$items` property with all cached values.
 
+### `FakeHttpFactory` (PSR-17)
+
+```php
+use Zenigata\Testing\Http\FakeHttpFactory;
+
+$factory = new FakeHttpFactory();
+$response = $factory->createResponse(201);
+$request = $factory->createRequest('GET', 'http://example.com');
+
+assert($response->getStatusCode() === 201);
+assert($request->getMethod() === 'GET');
+assert((string) $request->getUri() === 'http://example.com/');
+```
+
+### `FakeHttpClient` (PSR-18)
+
+```php
+use Psr\Http\Client\RequestExceptionInterface;
+use Zenigata\Testing\Exception\RequestException;
+use Zenigata\Testing\Http\FakeHttpClient;
+use Zenigata\Testing\Http\FakeRequest;
+
+// Create a fake request and client
+$request = new FakeRequest();
+$client  = new FakeHttpClient();
+
+// Send a request — no real network I/O occurs
+$response = $client->sendRequest($request);
+
+assert($response->getStatusCode() === 200);
+assert($client->calls[0] === $request);
+
+// Simulate a client that always throws a request exception
+$client = new FakeHttpClient(exception: new RequestException('custom error'));
+
+try {
+    $client->sendRequest(new FakeRequest());
+} catch (RequestExceptionInterface $e) {
+    assert($e->getMessage() === 'custom error');
+}
+```
+
+`FakeHttpClient` stores all **“sent”** requests in the public `$calls` property, allowing you to inspect and assert request behavior in your tests.
+
+This package incluedes **PSR-18 compliant exceptions** like `RequestException` or `NetworkException` for error-handling scenarios.
+
 ### `FakeClock` (PSR-20)
 
 ```php
 use Zenigata\Testing\Infrastructure\FakeClock;
 
 $datetime = new DateTimeImmutable('2023-01-01 00:00:00');
-
 $clock = new FakeClock($datetime);
 
 // Return the fixed time set at construction
