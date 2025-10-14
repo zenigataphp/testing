@@ -31,16 +31,16 @@ class RequestException extends Exception implements RequestExceptionInterface
     /**
      * Creates a new request exception instance.
      *
-     * @param RequestInterface $request  The HTTP request that caused the exception.
      * @param string           $message  Optional exception message.
      * @param int              $code     Optional error code.
      * @param Throwable|null   $previous Optional previous throwable for chaining.
+     * @param RequestInterface $request  The HTTP request that caused the exception.
      */
     public function __construct(
-        RequestInterface $request = new FakeRequest(),
         string $message = '',
         int $code = 0,
-        Throwable|null $previous = null
+        ?Throwable $previous = null,
+        RequestInterface $request = new FakeRequest(),
     ) {
         parent::__construct($message, $code, $previous);
 

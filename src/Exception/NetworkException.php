@@ -31,16 +31,16 @@ class NetworkException extends Exception implements NetworkExceptionInterface
     /**
      * Creates a new network exception instance.
      *
-     * @param RequestInterface $request  The HTTP request that failed to be sent.
      * @param string           $message  Optional exception message.
      * @param int              $code     Optional error code.
      * @param Throwable|null   $previous Optional previous throwable for chaining.
+     * @param RequestInterface $request  The HTTP request that failed to be sent.
      */
     public function __construct(
-        RequestInterface $request = new FakeRequest(),
         string $message = '',
         int $code = 0,
-        Throwable|null $previous = null
+        ?Throwable $previous = null,
+        RequestInterface $request = new FakeRequest(),
     ) {
         parent::__construct($message, $code, $previous);
 
