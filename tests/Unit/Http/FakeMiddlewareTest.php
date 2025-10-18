@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
+use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use RuntimeException;
 use Zenigata\Testing\Http\FakeMiddleware;
 use Zenigata\Testing\Http\FakeRequestHandler;
 use Zenigata\Testing\Http\FakeResponse;
@@ -18,15 +18,12 @@ use Zenigata\Testing\Http\FakeServerRequest;
 
 /**
  * Unit test for {@see FakeMiddleware}.
- *
- * Verifies the behavior of the fake PSR-15 middleware implementation.
  * 
  * Covered cases:
  *
- * - Default instantiation and type compliance.
+ * - Default state.
  * - Delegation of request processing to the provided request handler.
- * - Return type compliance with {@see ResponseInterface}.
- * - Correct propagation of a custom response returned by the handler.
+ * - Return a default fake response when no custom response is provided.
  * - Return a custom response when injected via the constructor.
  * - Throw a preconfigured exception instead of returning a response.
  * - Correct execution of `onHandle()` and `onResponse()` hooks.

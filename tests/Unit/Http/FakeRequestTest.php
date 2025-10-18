@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use function fopen;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeRequest;
 use Zenigata\Testing\Http\FakeUri;
 
+use function fopen;
+
 /**
  * Unit test for {@see FakeRequest}.
- *
- * Verifies the behavior of the fake PSR-7 request implementation.
  * 
  * Covered cases:
  *
- * - Default method, request target, and URI instance.
- * - Immutability when changing the HTTP method.
- * - Change the request target via {@see FakeRequest::withRequestTarget()}.
+ * - Default state.
+ * - Immutability when updating values.
+ * - Change the request target.
  * - Update the URI and automatically setting the Host header.
  * - Preserve the original Host header when requested.
  * - Stream automatically created from string or resource.

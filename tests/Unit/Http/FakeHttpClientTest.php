@@ -14,17 +14,15 @@ use Zenigata\Testing\Http\FakeResponse;
 
 /**
  * Unit test for {@see FakeHttpClient}.
- *
- * Verifies the behavior of the fake PSR-18 client implementation.
  * 
  * Covered cases:
  *
  * - Default state with empty call history.
- * - Return of a predefined fake response.
- * - Recording of sent requests for later inspection.
- * - Throwing of a predefined client exception.
- * - Verifies the exception may hold a different request.
- * - Preservation of request objects without modification.
+ * - Return a default fake response when no custom response is provided.
+ * - Return a custom response when injected via the constructor.
+ * - Throw a preconfigured client exception instead of returning a response.
+ * - Verifies the client exception may hold a different request.
+ * - Recording of sent requests without changes.
  */
 #[CoversClass(FakeHttpClient::class)]
 final class FakeHttpClientTest extends TestCase

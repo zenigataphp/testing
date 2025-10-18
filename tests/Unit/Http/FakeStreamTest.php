@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
+use RuntimeException;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Psr\Http\Message\StreamInterface;
+use Zenigata\Testing\Http\FakeStream;
+
 use const SEEK_END;
 use const SEEK_SET;
 
@@ -14,20 +20,12 @@ use function is_resource;
 use function rewind;
 use function stream_get_contents;
 
-use RuntimeException;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
-use Psr\Http\Message\StreamInterface;
-use Zenigata\Testing\Http\FakeStream;
-
 /**
  * Unit test for {@see FakeStream}.
- *
- * Verifies the behavior of the fake PSR-7 stream implementation.
  * 
  * Covered cases:
  * 
- * - Default state and capabilities (seekable, readable, writable, pointer position, size, EOF, read history).
+ * - Default state and capabilities.
  * - String cast returns stream contents.
  * - Accurate size calculation.
  * - Read chunks update the pointer, read count, and read history.

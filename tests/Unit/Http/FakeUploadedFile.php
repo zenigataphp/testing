@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use const UPLOAD_ERR_OK;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\UploadedFileInterface;
 use Zenigata\Testing\Http\FakeStream;
 use Zenigata\Testing\Http\FakeUploadedFile;
 
+use const UPLOAD_ERR_OK;
+
 /**
  * Unit test for {@see FakeUploadedFile}.
- *
- * Verifies the behavior of the fake PSR-7 uploaded file implementation.
  * 
  * Covered cases:
  *
- * - Default state: injected stream, null size, default error code, null filename and media type.
+ * - Default state and capabilities.
  * - Return an explicitly provided stream.
  * - Return explicit size if set, or falling back to the stream size.
  * - Default size to zero when not explicitly provided and the stream is empty.

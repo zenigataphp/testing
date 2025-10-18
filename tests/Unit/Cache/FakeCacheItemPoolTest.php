@@ -11,20 +11,18 @@ use Zenigata\Testing\Cache\FakeCacheItemPool;
 
 /**
  * Unit test for {@see FakeCacheItemPool}.
- *
- * Verifies the behavior of the fake PSR-6 cache item pool implementation.
  * 
  * Covered cases:
  *
  * - Default state with empty `items` and `deferred` collections.
  * - Return existing items when present in the pool.
  * - Create new items when requested keys are missing.
- * - Retrieve multiple items at once via `getItems()`.
- * - Correctly reflect hit/miss status via `hasItem()`.
- * - Clear all stored items with `clear()`.
- * - Remove single or multiple items via `deleteItem()` and `deleteItems()`.
- * - Defer items for later storage via `saveDeferred()`.
- * - Commit deferred items into the main pool with `commit()`.
+ * - Retrieve multiple items at once.
+ * - Correctly reflect hit/miss status.
+ * - Clear all stored items.
+ * - Remove single or multiple items.
+ * - Defer items for later storage.
+ * - Commit deferred items into the main pool.
  */
 #[CoversClass(FakeCacheItemPool::class)]
 final class FakeCacheItemPoolTest extends TestCase

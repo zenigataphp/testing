@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace Zenigata\Testing\Test\Unit\Http;
 
-use function array_filter;
-use function array_is_list;
-use function is_array;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\StreamInterface;
 use Zenigata\Testing\Http\FakeMessage;
 use Zenigata\Testing\Http\FakeStream;
 
+use function array_filter;
+use function array_is_list;
+use function is_array;
+
 /**
  * Unit test for {@see FakeMessage}.
- *
- * Validates the behavior of the fake PSR-7 message implementation.
  * 
  * Covered cases:
  *
- * - Default state, including empty headers, default body, and protocol version.
- * - Header normalization ensures case-insensitive access while preserving original header names.
+ * - Default state.
+ * - Immutability when updating values.
+ * - Header case-insensitive access while preserving original header names.
  * - Header access, retrieval, and string concatenation.
  * - Header manipulation via addition, replacement, and removal.
- * - Immutability when replacing the body or protocol version.
  */
 #[CoversClass(FakeMessage::class)]
 final class FakeMessageTest extends TestCase
@@ -38,6 +36,27 @@ final class FakeMessageTest extends TestCase
         $this->assertInstanceOf(StreamInterface::class, $message->getBody());
         $this->assertInstanceOf(FakeStream::class, $message->getBody());
         $this->assertSame('1.1', $message->getProtocolVersion());
+    }
+
+    public function testWithBody(): void
+    {
+        $stream = new FakeStream();
+
+        $original = new FakeMessage();
+        $modified = $original->withBody($stream);
+
+        $this->assertNotSame($original, $modified);
+        $this->assertSame($stream, $modified->getBody());
+    }
+
+    public function testWithProtocolVersion(): void
+    {
+        $original = new FakeMessage();
+        $modified = $original->withProtocolVersion('2');
+
+        $this->assertNotSame($original, $modified);
+        $this->assertSame('1.1', $original->getProtocolVersion());
+        $this->assertSame('2', $modified->getProtocolVersion());
     }
 
     public function testHeadersNormalization(): void
@@ -86,26 +105,5 @@ final class FakeMessageTest extends TestCase
         $this->assertSame(['abc', 'def'], $added->getHeader('X-Custom-Header'));
         $this->assertSame(['xyz'], $replaced->getHeader('X-Custom-Header'));
         $this->assertFalse($removed->hasHeader('X-Custom-Header'));
-    }
-
-    public function testWithBody(): void
-    {
-        $stream = new FakeStream();
-
-        $original = new FakeMessage();
-        $modified = $original->withBody($stream);
-
-        $this->assertNotSame($original, $modified);
-        $this->assertSame($stream, $modified->getBody());
-    }
-
-    public function testWithProtocolVersion(): void
-    {
-        $original = new FakeMessage();
-        $modified = $original->withProtocolVersion('2');
-
-        $this->assertNotSame($original, $modified);
-        $this->assertSame('1.1', $original->getProtocolVersion());
-        $this->assertSame('2', $modified->getProtocolVersion());
     }
 }

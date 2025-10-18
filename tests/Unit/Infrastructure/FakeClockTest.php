@@ -11,12 +11,10 @@ use Zenigata\Testing\Infrastructure\FakeClock;
 
 /**
  * Unit test for {@see FakeClock}.
- *
- * Verifies the behavior of the fake PSR-20 clock implementation.
  * 
  * Covered cases:
  *
- * - Return the current time by default.
+ * - Default state returning the current time.
  * - Accept a fixed time via {@see DateTimeImmutable} or string.
  * - Return consistent results for the provided fixed time.
  */
@@ -27,8 +25,11 @@ final class FakeClockTest extends TestCase
     {
         $clock = new FakeClock();
 
-        $this->assertInstanceOf(DateTimeImmutable::class, $clock->now());
-        $this->assertSame((new DateTimeImmutable())->getTimestamp(), $clock->now()->getTimestamp());
+        $datetime = new DateTimeImmutable();
+        $now = $clock->now();
+
+        $this->assertInstanceOf(DateTimeImmutable::class, $now);
+        $this->assertSame($datetime->getTimestamp(), $now->getTimestamp());
     }
 
     public function testAcceptDateTimeImmutable(): void

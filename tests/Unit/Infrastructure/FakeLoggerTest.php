@@ -11,11 +11,10 @@ use Zenigata\Testing\Infrastructure\FakeLogger;
 
 /**
  * Unit test for {@see FakeLogger}.
- *
- * Verifies the behavior of the fake PSR-3 logger implementation.
  * 
  * Covered cases:
  *
+ * - Default state with empty output.
  * - Log messages at various levels with string and {@see Stringable} inputs.
  * - Format log entries with level, message, and context data.
  * - Handle empty context arrays.

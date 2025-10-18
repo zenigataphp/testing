@@ -12,13 +12,10 @@ use Zenigata\Testing\Http\FakeUri;
 
 /**
  * Unit test for {@see FakeUri}.
- *
- * Verifies the behavior of the fake PSR-7 URI implementation.
  * 
  * Covered cases:
  *
- * - Default values for scheme, host, path, port, user info, query, fragment, and string representation.
- * - Return constructor-provided values for all URI components.
+ * - Default state and string representation.
  * - Correct formatting of the authority component, including user info and port.
  * - Build the full URI string from all components.
  * - Immutability of `with*` methods, which return modified clones with updated components.
